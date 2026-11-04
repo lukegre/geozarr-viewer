@@ -1,0 +1,28 @@
+# Kiosk: no sidebar. Variable dropdown on top, horizontal legend and basemap selector on the map, timeline at the
+# bottom, pointer readout bottom right.
+title = "MUR SST demo"
+store = "s3://spi-greenfjord-public/test/mur_sst_subset.zarr"
+endpoint = "https://os.zhdk.cloud.switch.ch"
+relay = "/proxy/"
+theme = "auto"
+
+[[components]]
+name = "variable-dropdown"
+slot = "topbar"
+
+[[components]]
+name = "legend"
+slot = "overlay-bl"
+options = { placement = "overlay", orientation = "horizontal" }
+
+[[components]]
+name = "timeline"
+slot = "bottom"
+
+[[components]]
+name = "readout"
+slot = "overlay-br"
+
+[[components]]
+name = "basemap"
+slot = "overlay-tl"

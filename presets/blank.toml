@@ -1,0 +1,12 @@
+# No store: a map with basemaps only (add ?store=...&endpoint=... to the URL to open one).
+title = "GeoZarr viewer"
+theme = "auto"
+relay = "/proxy/"
+
+[[components]]
+name = "basemap"
+slot = "overlay-tl"
+
+[[components]]
+name = "readout"
+slot = "overlay-br"

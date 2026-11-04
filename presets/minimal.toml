@@ -1,0 +1,15 @@
+# Basemap selector + pointer readout on the demo store. The bucket has no CORS rules, so the page reads it through
+# the relay of scripts/serve.py (/proxy/). Assemble: python3 scripts/assemble.py presets/minimal.toml -o $TMPDIR/viewer/index.html
+title = "MUR SST demo"
+store = "s3://spi-greenfjord-public/test/mur_sst_subset.zarr"
+endpoint = "https://os.zhdk.cloud.switch.ch"
+relay = "/proxy/"
+theme = "auto"
+
+[[components]]
+name = "basemap"
+slot = "topbar"
+
+[[components]]
+name = "readout"
+slot = "overlay-br"

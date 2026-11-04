@@ -1,0 +1,13 @@
+{
+  "name": "variable-cards",
+  "description": "Variable cards: Selected/Other sections, click to select, drag to reorder, eye, remove, per-card settings and info",
+  "slots": ["sidebar"],
+  "default_slot": "sidebar",
+  "requires": [],
+  "conflicts": ["variable-dropdown"],
+  "options": {
+    "sections": {"type": "bool", "default": true, "doc": "Selected/Other sections; false = one flat list (all variables, selected ones highlighted)"},
+    "drag": {"type": "bool", "default": true, "doc": "drag handle to reorder and to move cards between Selected and Other"},
+    "show_other": {"type": "bool", "default": true, "doc": "list the unselected variables (Other section, or the unselected cards of the flat list)"}
+  }
+}

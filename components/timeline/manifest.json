@@ -1,0 +1,13 @@
+{
+  "name": "timeline",
+  "description": "Horizontal scrubber for the Horizontal dimension (usually time): date/index ticks, play/pause, arrow keys",
+  "slots": ["bottom", "topbar"],
+  "default_slot": "bottom",
+  "requires": [],
+  "conflicts": [],
+  "options": {
+    "play": {"type": "bool", "default": true, "doc": "show the play/pause button"},
+    "fps": {"type": "number", "default": 1.25, "min": 0.1, "max": 30, "doc": "playback speed in steps per second"},
+    "keys": {"type": "bool", "default": true, "doc": "Left/Right arrow keys step the dimension"}
+  }
+}

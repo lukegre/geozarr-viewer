@@ -1,0 +1,11 @@
+{
+  "name": "dim-roles",
+  "description": "Pick per dimension whether it is the Horizontal timeline, a Vertical slider or Off",
+  "slots": ["sidebar", "sidebar-bottom"],
+  "default_slot": "sidebar",
+  "requires": [],
+  "conflicts": [],
+  "options": {
+    "title": {"type": "bool", "default": true, "doc": "show the \"Dimensions\" heading"}
+  }
+}

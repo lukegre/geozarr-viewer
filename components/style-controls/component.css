@@ -1,0 +1,15 @@
+.gv-style-controls.sc-panel { min-width: 240px; display: flex; flex-direction: column; gap: var(--gv-sp); }
+.gv-style-controls.sc-controls { display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+.gv-style-controls .sc-row { display: flex; align-items: center; gap: var(--gv-sp); flex-wrap: wrap; }
+.gv-style-controls .sc-row > label { flex: none; min-width: 64px; color: var(--gv-muted); font-weight: 600; }
+.gv-style-controls .sc-row select { flex: 1; min-width: 0; }
+.gv-style-controls .sc-row input[type=number] { flex: 1; min-width: 0; width: 70px; }
+.gv-style-controls .sc-row input[type=range] { flex: 1; min-width: 0; }
+.gv-style-controls .sc-row input.bad { border-color: var(--gv-danger); }
+.gv-style-controls .sc-sep { color: var(--gv-muted); }
+.gv-style-controls .sc-cmbar { flex: none; width: 56px; height: 12px; border-radius: 3px; border: 1px solid var(--gv-card-line); }
+.gv-style-controls .sc-checks { gap: 4px 12px; padding-left: 72px; }
+.gv-style-controls .sc-check { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.gv-style-controls .sc-check input:disabled + span { opacity: .5; }
+.gv-style-controls .sc-note { color: var(--gv-muted); font-size: 12px; }
+.gv-style-controls button:disabled { opacity: .5; cursor: default; }

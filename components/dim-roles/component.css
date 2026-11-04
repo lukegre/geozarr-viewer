@@ -1,0 +1,4 @@
+.gv-dim-roles .dr-title { margin-bottom: 4px; font-size: 12px; font-weight: 600; color: var(--gv-muted); }
+.gv-dim-roles .dr-row { display: flex; align-items: center; justify-content: space-between; gap: var(--gv-sp); margin-bottom: 4px; }
+.gv-dim-roles .dr-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gv-dim-roles select { width: 104px; flex: none; }

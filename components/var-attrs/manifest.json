@@ -1,0 +1,9 @@
+{
+  "name": "var-attrs",
+  "description": "Per-variable attributes popover, opened by the info icon of a variable card (needs variable-cards)",
+  "slots": ["overlay-tl", "overlay-tr", "overlay-bl", "overlay-br", "topbar", "bottom", "sidebar", "sidebar-bottom"],
+  "default_slot": "overlay-tl",
+  "requires": [],
+  "conflicts": [],
+  "options": {}
+}

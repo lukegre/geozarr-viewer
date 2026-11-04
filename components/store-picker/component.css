@@ -1,0 +1,8 @@
+.gv-store-picker { display: flex; gap: var(--gv-sp); flex: 1; min-width: 0; }
+.gv-store-picker input { height: 30px; padding: 4px 10px; font: inherit; text-overflow: ellipsis; }
+.gv-store-picker input:first-child { flex: 1; min-width: 0; }
+.gv-store-picker input:focus { border-color: var(--gv-accent); outline: none; }
+.gv-store-picker input.busy { opacity: .6; }
+.gv-store-picker input:not(:first-child) { flex: 0 1 260px; min-width: 120px; }
+.gv-store-picker[data-in="sidebar"] { flex-direction: column; flex: none; }
+.gv-store-picker[data-in="sidebar"] input:not(:first-child) { flex: none; width: 100%; }

@@ -1,0 +1,90 @@
+/* Tokens (light/dark) and shared primitives. Components use only these tokens and the .gv-* primitives.
+   theme = auto: prefers-color-scheme decides; light/dark: data-theme on <html> forces it. Start: the reference's :root. */
+:root {
+  --gv-sp: 8px;
+  --gv-radius: 8px;
+  --gv-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gv-card: #ffffff;
+  --gv-card-line: rgba(0, 0, 0, .08);
+  --gv-sidebar: #f3f4f6;
+  --gv-text: #1f2328;
+  --gv-muted: #6b7280;
+  --gv-accent: #2563eb;
+  --gv-danger: #d1242f;
+  --gv-rail: rgba(0, 0, 0, .16);
+  --gv-hover: rgba(127, 127, 127, .16);
+  --gv-shadow: 0 1px 3px rgba(0, 0, 0, .14), 0 1px 2px rgba(0, 0, 0, .08);
+  --gv-map-bg: #111418;
+  color-scheme: light dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --gv-card: rgba(22, 27, 34, .92);
+    --gv-card-line: rgba(255, 255, 255, .08);
+    --gv-sidebar: #0d1117;
+    --gv-text: #e6edf3;
+    --gv-muted: #9aa4b2;
+    --gv-accent: #58a6ff;
+    --gv-rail: rgba(255, 255, 255, .22);
+    --gv-shadow: 0 1px 3px rgba(0, 0, 0, .55);
+  }
+}
+:root[data-theme="dark"] {
+  --gv-card: rgba(22, 27, 34, .92);
+  --gv-card-line: rgba(255, 255, 255, .08);
+  --gv-sidebar: #0d1117;
+  --gv-text: #e6edf3;
+  --gv-muted: #9aa4b2;
+  --gv-accent: #58a6ff;
+  --gv-rail: rgba(255, 255, 255, .22);
+  --gv-shadow: 0 1px 3px rgba(0, 0, 0, .55);
+}
+
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body { font: 13px/1.4 var(--gv-font); color: var(--gv-text); background: var(--gv-map-bg); overflow: hidden; }
+.gv-app input, .gv-app select, .gv-app button { font: inherit; color: inherit; accent-color: var(--gv-accent); }
+.gv-app button { cursor: pointer; }
+.gv-app :focus-visible { outline: 2px solid var(--gv-accent); outline-offset: 1px; }
+.gv-app select, .gv-app input[type=text], .gv-app input[type=number] {
+  box-sizing: border-box; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--gv-card-line);
+  background: var(--gv-card); color: var(--gv-text); }
+.gv-app select option, .gv-app select optgroup { background: var(--gv-sidebar); color: var(--gv-text); }
+
+/* primitives */
+.gv-panel { padding: var(--gv-sp) 12px; border-radius: var(--gv-radius); background: var(--gv-card);
+  box-shadow: var(--gv-shadow); border: 1px solid var(--gv-card-line); }
+.gv-row { display: flex; align-items: center; gap: var(--gv-sp); }
+.gv-row > label { flex: none; color: var(--gv-muted); font-size: 12px; font-weight: 600; }
+.gv-btn { padding: 3px 10px; border-radius: 6px; border: 1px solid var(--gv-card-line); background: transparent; }
+.gv-btn:hover { background: var(--gv-hover); }
+.gv-iconbtn { flex: none; width: 24px; height: 24px; display: grid; place-items: center; padding: 0; border: 0;
+  border-radius: 6px; background: transparent; color: var(--gv-muted); }
+.gv-iconbtn:hover { background: var(--gv-hover); color: var(--gv-text); }
+.gv-iconbtn svg { width: 16px; height: 16px; }
+
+/* errors (core) */
+.gv-toast { position: absolute; z-index: 20; left: 50%; top: var(--gv-sp); transform: translateX(-50%);
+  width: min(560px, calc(100% - 2 * var(--gv-sp))); box-sizing: border-box; padding: 8px 10px; border-radius: 6px;
+  font-size: 12px; line-height: 1.4; border: 1px solid var(--gv-danger); background: var(--gv-card);
+  box-shadow: var(--gv-shadow); overflow-wrap: anywhere; cursor: pointer; }
+.gv-toast .msg { font-weight: 600; color: var(--gv-danger); }
+.gv-toast .hint { margin-top: 4px; }
+.gv-toast code { font-size: 11px; padding: 0 3px; border-radius: 3px; background: rgba(127, 127, 127, .2); }
+
+/* map chrome: OpenLayers controls in the card style; Light/Dark basemaps are CSS filters on one OSM source */
+.ol-zoom { top: var(--gv-sp); left: auto; right: var(--gv-sp); padding: 2px; border-radius: var(--gv-radius);
+  background: var(--gv-card); box-shadow: var(--gv-shadow); border: 1px solid var(--gv-card-line); }
+.ol-zoom button { width: 28px; height: 28px; margin: 0; border-radius: 6px; background: transparent;
+  color: var(--gv-text); font: 600 16px/1 var(--gv-font); }
+.ol-zoom button:hover, .ol-zoom button:focus { background: var(--gv-hover); color: var(--gv-text); }
+.ol-attribution, .ol-attribution.ol-uncollapsible, .ol-attribution.ol-collapsed {
+  bottom: var(--gv-sp); right: var(--gv-sp); border-radius: var(--gv-radius); background: var(--gv-card);
+  box-shadow: var(--gv-shadow); border: 1px solid var(--gv-card-line); font: 11px/1.4 var(--gv-font); color: var(--gv-muted); }
+.ol-attribution ul { margin: 0; padding: 2px 8px; color: var(--gv-muted); font-size: 11px; text-shadow: none; }
+.ol-attribution a { color: inherit; }
+.ol-attribution button { background: transparent; color: var(--gv-text); }
+.bm-light canvas { filter: grayscale(1) brightness(1.08) contrast(.9); }
+.bm-dark canvas { filter: invert(1) hue-rotate(180deg) grayscale(.85) brightness(.85) contrast(.9); }

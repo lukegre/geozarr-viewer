@@ -1,0 +1,54 @@
+# Analyst: right-hand sidebar with variable cards (colour controls and legend inside the cards), store info and
+# dimension sliders; timeline at the bottom, pointer readout bottom left.
+title = "MUR SST demo"
+store = "s3://spi-greenfjord-public/test/mur_sst_subset.zarr"
+endpoint = "https://os.zhdk.cloud.switch.ch"
+relay = "/proxy/"
+theme = "auto"
+
+[layout]
+sidebar = "right"
+sidebar_width = 340
+sidebar_collapsible = true
+
+[groups."Global settings"]
+collapsed = true
+
+[[components]]
+name = "variable-cards"
+slot = "sidebar"
+
+[[components]]
+name = "style-controls"
+options = { placement = "card" }
+
+[[components]]
+name = "legend"
+slot = "sidebar"
+options = { placement = "card" }
+
+[[components]]
+name = "info-panel"
+slot = "sidebar"
+
+[[components]]
+name = "dim-sliders"
+slot = "sidebar"
+
+[[components]]
+name = "label-mode"
+slot = "sidebar-bottom"
+group = "Global settings"
+
+[[components]]
+name = "basemap"
+slot = "sidebar-bottom"
+group = "Global settings"
+
+[[components]]
+name = "timeline"
+slot = "bottom"
+
+[[components]]
+name = "readout"
+slot = "overlay-bl"

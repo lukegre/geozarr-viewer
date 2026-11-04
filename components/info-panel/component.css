@@ -1,0 +1,14 @@
+.gv-info-panel .ip-btn[aria-expanded="true"] { background: var(--gv-hover); color: var(--gv-text); }
+.gv-info-panel .ip-panel { box-sizing: border-box; padding: var(--gv-sp) 12px 12px; border-radius: var(--gv-radius);
+  background: var(--gv-card); box-shadow: var(--gv-shadow); border: 1px solid var(--gv-card-line); font-size: 12px; }
+.gv-info-panel[data-mode="popover"] .ip-panel { position: fixed; z-index: 12; width: min(520px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px); overflow: auto; }
+.gv-info-panel[data-mode="inline"] .ip-panel { margin-top: var(--gv-sp); }
+.gv-info-panel h2 { margin: 8px 0 4px; font-size: 12px; font-weight: 600; color: var(--gv-muted);
+  text-transform: uppercase; letter-spacing: .04em; }
+.gv-info-panel h2:first-child { margin-top: 0; }
+.gv-info-panel table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.gv-info-panel th, .gv-info-panel td { padding: 3px 6px; text-align: left; vertical-align: top;
+  border-top: 1px solid var(--gv-card-line); overflow-wrap: anywhere; }
+.gv-info-panel th { width: 32%; font-weight: 600; color: var(--gv-muted); }
+.gv-info-panel td { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }

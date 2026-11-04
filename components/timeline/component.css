@@ -1,0 +1,17 @@
+.gv-timeline { display: flex; align-items: flex-start; gap: var(--gv-sp); height: 68px; box-sizing: border-box;
+  padding: 4px 12px; user-select: none; flex: 1; min-width: 0; }
+.gv-timeline .tl-ctl { display: flex; align-items: center; gap: 2px; padding-top: 22px; flex: none; }
+.gv-timeline .tl-ctl .gv-iconbtn { width: 28px; height: 28px; }
+.gv-timeline .tl-name { flex: none; padding-top: 30px; font-size: 12px; color: var(--gv-muted); }
+.gv-timeline .tl-track { position: relative; flex: 1; min-width: 0; height: 60px; margin: 0 20px; touch-action: none; cursor: pointer; }
+.gv-timeline .tl-rail { position: absolute; left: 0; right: 0; top: 30px; height: 4px; border-radius: 2px; background: var(--gv-rail); }
+.gv-timeline .tl-mark { position: absolute; width: 1px; background: var(--gv-muted); opacity: .8; }
+.gv-timeline .tl-mark.minor { top: 38px; height: 4px; opacity: .5; }
+.gv-timeline .tl-mark.major { top: 38px; height: 7px; }
+.gv-timeline .tl-label { position: absolute; top: 46px; transform: translateX(-50%); font-size: 11px; line-height: 14px;
+  white-space: nowrap; color: var(--gv-muted); font-variant-numeric: tabular-nums; }
+.gv-timeline .tl-handle { position: absolute; top: 24px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%;
+  background: var(--gv-accent); border: 2px solid var(--gv-card); box-sizing: border-box; box-shadow: 0 0 0 1px var(--gv-accent); cursor: grab; }
+.gv-timeline .tl-bubble { position: absolute; top: 0; transform: translateX(-50%); padding: 1px 8px; border-radius: 6px;
+  background: var(--gv-accent); color: #fff; font-size: 12px; line-height: 18px; white-space: nowrap;
+  font-variant-numeric: tabular-nums; pointer-events: none; }

@@ -1,0 +1,11 @@
+{
+  "name": "store-picker",
+  "description": "Store path or URL field (Enter opens it); optional S3 endpoint field shown for s3:// stores",
+  "slots": ["topbar", "sidebar", "sidebar-bottom"],
+  "default_slot": "topbar",
+  "requires": [],
+  "conflicts": [],
+  "options": {
+    "endpoint": {"type": "bool", "default": true, "doc": "show the S3 endpoint field when the path is an s3:// URL"}
+  }
+}

@@ -1,0 +1,4 @@
+.gv-cmap-sources .cs-title { font-size: 12px; font-weight: 600; color: var(--gv-muted); margin-bottom: 4px; }
+.gv-cmap-sources .cs-boxes { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; }
+.gv-cmap-sources .cs-check { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.gv-cmap-sources .cs-check input:disabled + span { opacity: .5; }

@@ -1,0 +1,73 @@
+/* Slot grid. The assembler emits all slots (empty ones take no space) and sets data-sidebar and --gv-sb-width.
+   topbar spans the width; the sidebar sits left or right of the main column (map, overlays, bottom). */
+.gv-app { --gv-sb-w: var(--gv-sb-width, 320px); position: absolute; inset: 0; display: grid;
+  grid-template-columns: var(--gv-sb-w) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "top top" "side main"; }
+.gv-app[data-sidebar="right"] { grid-template-columns: minmax(0, 1fr) var(--gv-sb-w); grid-template-areas: "top top" "main side"; }
+.gv-app[data-sidebar="none"] { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "main"; }
+.gv-app.collapsed { --gv-sb-w: 40px; }
+/* a slot takes no space and draws no chrome without a visible child: empty, or all children `hidden` (a component can
+   hide its root, e.g. the timeline without a Horizontal dimension) */
+.gv-slot:empty, .gv-slot:not(:has(> :not([hidden]):not(.gv-group), > .gv-group > .gv-group-body > :not([hidden]))) { display: none !important; }
+/* a group (collapsible section, see core/app.js initGroups) hides itself when all its components are hidden */
+.gv-group:not(:has(> .gv-group-body > :not([hidden]))) { display: none; }
+/* the sidebar column goes with its slots (sidebar, sidebar-bottom): no visible component in them = layout as without a sidebar */
+.gv-sidebar:not(:has(> .gv-slot > :not([hidden]):not(.gv-group), > .gv-slot > .gv-group > .gv-group-body > :not([hidden]))) { display: none; }
+.gv-app:has(> .gv-sidebar:not(:has(> .gv-slot > :not([hidden]):not(.gv-group), > .gv-slot > .gv-group > .gv-group-body > :not([hidden])))) {
+  grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "main"; }
+
+.gv-topbar { grid-area: top; z-index: 10; display: flex; align-items: center; gap: var(--gv-sp);
+  box-sizing: border-box; padding: 4px var(--gv-sp); background: var(--gv-sidebar); border-bottom: 1px solid var(--gv-card-line); }
+
+.gv-sidebar { grid-area: side; position: relative; z-index: 6; display: flex; flex-direction: column; min-width: 0;
+  min-height: 0; overflow: hidden; box-sizing: border-box; background: var(--gv-sidebar);
+  border-right: 1px solid var(--gv-card-line); }
+.gv-app[data-sidebar="right"] .gv-sidebar { border-right: 0; border-left: 1px solid var(--gv-card-line); }
+.gv-sidebar > .gv-slot { box-sizing: border-box; padding: var(--gv-sp); display: flex; flex-direction: column; gap: var(--gv-sp); }
+.gv-sidebar > .gv-slot[data-slot="sidebar"] { flex: 1; min-height: 0; overflow: auto; }
+/* sidebar-bottom is pinned under the scrolling sidebar slot (D-44/D-46 "Global settings"), with its own scroll when tall */
+.gv-sidebar > .gv-slot[data-slot="sidebar-bottom"] { flex: none; max-height: 45%; overflow: auto; border-top: 1px solid var(--gv-card-line); }
+.gv-app[data-collapsible] .gv-sidebar { padding-top: 36px; }
+.gv-sbtoggle { position: absolute; top: 4px; right: var(--gv-sp); z-index: 2; width: 28px; height: 28px; display: grid;
+  place-items: center; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--gv-muted); }
+.gv-app[data-sidebar="right"] .gv-sbtoggle { right: auto; left: var(--gv-sp); transform: scaleX(-1); }
+.gv-sbtoggle:hover { background: var(--gv-hover); color: var(--gv-text); }
+.gv-sbtoggle svg { width: 16px; height: 16px; }
+.gv-app.collapsed .gv-sbtoggle { right: 6px; }
+.gv-app[data-sidebar="right"].collapsed .gv-sbtoggle { left: 6px; right: auto; }
+.gv-app.collapsed .gv-sbtoggle svg { transform: rotate(180deg); }
+.gv-app.collapsed .gv-sidebar > .gv-slot { display: none; }
+.gv-spine { display: none; }
+.gv-app.collapsed .gv-spine { display: block; position: absolute; top: 44px; bottom: 12px; left: 0; right: 0; padding: 0;
+  border: 0; background: transparent; color: var(--gv-muted); font: inherit; overflow: hidden; }
+.gv-spine span { position: absolute; left: 50%; top: 0; transform: translateX(-50%) rotate(180deg); writing-mode: vertical-rl;
+  white-space: nowrap; font-size: 15px; line-height: 1; max-height: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+/* collapsible group: header button (icon, title, chevron) + body; the state class is on the section */
+.gv-group { display: flex; flex-direction: column; gap: var(--gv-sp); }
+.gv-group-head { display: flex; align-items: center; gap: 6px; width: 100%; padding: 2px 0; border: 0; background: transparent;
+  color: var(--gv-muted); font: inherit; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
+.gv-group-head:hover { color: var(--gv-text); }
+.gv-group-icon { display: inline-grid; place-items: center; }
+.gv-group-icon svg, .gv-group-chev svg { width: 14px; height: 14px; }
+.gv-group-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gv-group-chev { display: inline-grid; place-items: center; transition: transform .15s; }
+.gv-group.collapsed .gv-group-chev { transform: rotate(-90deg); }
+.gv-group-body { display: flex; flex-direction: column; gap: var(--gv-sp); }
+.gv-group-body[hidden] { display: none; }
+
+.gv-main { grid-area: main; position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.gv-mapwrap { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+#gv-map { position: absolute; inset: 0; background: var(--gv-map-bg); }
+.gv-slot[data-slot="bottom"] { position: relative; z-index: 4; box-sizing: border-box; padding: var(--gv-sp);
+  background: var(--gv-sidebar); border-top: 1px solid var(--gv-card-line); }
+
+/* overlays sit on the map and let clicks through except on their own content; the OL zoom (top right) and
+   attribution (bottom right) controls keep their corners, so the right-hand overlays start below / end above them */
+.gv-slot[data-slot^="overlay-"] { position: absolute; z-index: 5; display: flex; flex-direction: column; gap: var(--gv-sp);
+  max-width: calc(100% - 2 * var(--gv-sp)); pointer-events: none; }
+.gv-slot[data-slot^="overlay-"] > * { pointer-events: auto; }
+.gv-slot[data-slot="overlay-tl"] { top: var(--gv-sp); left: var(--gv-sp); align-items: flex-start; }
+.gv-slot[data-slot="overlay-tr"] { top: 80px; right: var(--gv-sp); align-items: flex-end; }
+.gv-slot[data-slot="overlay-bl"] { bottom: var(--gv-sp); left: var(--gv-sp); align-items: flex-start; }
+.gv-slot[data-slot="overlay-br"] { bottom: 40px; right: var(--gv-sp); align-items: flex-end; }

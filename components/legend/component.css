@@ -1,0 +1,25 @@
+.gv-legend { font-size: 11px; font-variant-numeric: tabular-nums; }
+.gv-legend.lg-overlay { display: flex; gap: var(--gv-sp); }
+.gv-legend.lg-overlay.lg-horizontal { flex-direction: column; }
+.gv-legend.lg-overlay.lg-vertical { flex-direction: row; align-items: flex-end; }
+.gv-legend .lg-title { font-weight: 600; margin-bottom: 4px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gv-legend .lg-bar { border-radius: 3px; border: 1px solid var(--gv-card-line); }
+.gv-legend .lg-ticks { position: relative; }
+.gv-legend .lg-tick { position: absolute; background: var(--gv-muted); }
+.gv-legend .lg-label { position: absolute; white-space: nowrap; color: var(--gv-muted); }
+.gv-legend .lg-units { color: var(--gv-muted); }
+/* horizontal: bar on top, ticks below, units right-aligned underneath */
+.gv-legend .lg-horizontal .lg-bar { width: 220px; max-width: 100%; height: 12px; box-sizing: border-box; }
+.gv-legend .lg-horizontal .lg-ticks { width: 220px; max-width: 100%; height: 18px; }
+.gv-legend .lg-horizontal .lg-tick { top: 0; width: 1px; height: 4px; }
+.gv-legend .lg-horizontal .lg-label { top: 5px; }
+.gv-legend .lg-horizontal .lg-units { text-align: right; }
+.gv-legend.lg-card .lg-horizontal .lg-bar, .gv-legend.lg-card .lg-horizontal .lg-ticks { width: 100%; }
+/* vertical: bar left, ticks right, units below */
+.gv-legend .lg-vertical .lg-body { display: flex; }
+.gv-legend .lg-vertical .lg-bar { width: 12px; height: 160px; box-sizing: border-box; }
+.gv-legend .lg-vertical .lg-ticks { width: 44px; height: 160px; }
+.gv-legend .lg-vertical .lg-tick { left: 0; height: 1px; width: 4px; }
+.gv-legend .lg-vertical .lg-label { left: 7px; }
+.gv-legend .lg-cat { display: flex; align-items: center; gap: 6px; }
+.gv-legend .lg-swatch { flex: none; width: 12px; height: 12px; border-radius: 2px; border: 1px solid var(--gv-card-line); }

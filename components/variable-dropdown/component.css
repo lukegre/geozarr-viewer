@@ -1,0 +1,11 @@
+.gv-variable-dropdown { min-width: 0; }
+.gv-variable-dropdown select { flex: 1; min-width: 0; max-width: 100%; }
+.gv-variable-dropdown .vd-multi { position: relative; flex: 1; min-width: 0; }
+.gv-variable-dropdown .vd-multi > summary { list-style: none; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gv-variable-dropdown .vd-multi > summary::-webkit-details-marker { display: none; }
+.gv-variable-dropdown .vd-multi > summary::after { content: "\25BE"; margin-left: 6px; color: var(--gv-muted); }
+.gv-variable-dropdown .vd-list { position: absolute; z-index: 15; left: 0; top: calc(100% + 4px); min-width: 100%;
+  max-height: 50vh; overflow: auto; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px; }
+.gv-variable-dropdown .vd-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; cursor: pointer; }
+/* inside the sidebar (which scrolls) the list is part of the flow instead of a floating panel */
+.gv-slot[data-slot="sidebar"] .gv-variable-dropdown .vd-list { position: static; margin-top: 4px; }
