@@ -1,0 +1,6 @@
+[project]
+name = "geozarr-viewer"
+version = "0.1.0"
+description = "Standalone GeoZarr viewer assembled from a component library (stdlib only)"
+requires-python = ">=3.11"
+dependencies = []

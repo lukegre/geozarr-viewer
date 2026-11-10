@@ -53,6 +53,14 @@ node --test                               # core pure functions, component tests
 The boot smoke tests (`tests/core_boot.test.cjs`) run the assembled page against a fake DOM and fake OpenLayers: they
 check wiring, not rendering; look at the page in a browser for that.
 
+## RenkuLab
+
+The repo builds as a RenkuLab code-based environment (`pyproject.toml` + `uv.lock`, no dependencies: stdlib only).
+For a public app, add an App launcher with "Create from code" (Python builder) pointing at this repo; the Renku
+project and the git repo must both be public. The `Procfile` assembles `presets/explorer.toml` at start-up and serves
+it with `serve.py` on `$RENKU_SESSION_PORT`, bound to `0.0.0.0`. The explorer's relay is relative (`proxy/`), so it
+works under a path prefix too.
+
 ## Layout
 
 `core/` (always included), `components/<name>/` (`component.js`, `component.css`, `manifest.json`, `test.cjs`),
