@@ -85,7 +85,8 @@ class AssembleTest(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         spec = json.loads(re.search(r'<script id="spec" type="application/json">(.*?)</script>', html, re.S).group(1))
         self.assertEqual(spec["components"][0]["slot"], "overlay-br")
-        self.assertEqual(spec["layout"], {"sidebar": "left", "sidebar_width": 320, "sidebar_collapsible": True})
+        self.assertEqual(spec["layout"], {"sidebar": "left", "sidebar_width": 320, "sidebar_collapsible": True,
+                                          "sidebar_resizable": True})
         self.assertEqual(spec["theme"], "auto")
         self.assertIn('data-sidebar="none"', html)  # nothing in the sidebar slot
 
@@ -101,6 +102,11 @@ class AssembleTest(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertNotIn("</script><b>", html)
         self.assertEqual(html.count("</script>"), 2)  # spec + module only
+
+    def test_inline_svg_favicon(self):
+        r, html = self.build("")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,', html)
 
     def test_stdout_without_o(self):
         r = run(self.spec(""))

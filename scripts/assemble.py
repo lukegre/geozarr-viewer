@@ -22,8 +22,18 @@ OPTION_TYPES = ["bool", "int", "number", "string", "enum"]
 TOP_KEYS = {"title": str, "store": str, "endpoint": str, "relay": str}
 GROUP_DEFAULTS = {"collapsed": False, "icon": "gear"}
 GROUP_ICONS = ["gear", "none"]
-LAYOUT_DEFAULTS = {"sidebar": "left", "sidebar_width": 320, "sidebar_collapsible": True}
+LAYOUT_DEFAULTS = {"sidebar": "left", "sidebar_width": 320, "sidebar_collapsible": True, "sidebar_resizable": True}
 OL_CSS = "https://cdn.jsdelivr.net/npm/ol@10.10.0/ol.css"
+# Inline SVG favicon (stacked multiscale levels), URL-encoded so the page stays a single file.
+FAVICON = (
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
+    "%3Crect width='32' height='32' rx='7' fill='%23111418'/%3E"
+    "%3Cdefs%3E%3Cfilter id='s'%3E%3CfeDropShadow dx='0' dy='1' stdDeviation='.8' "
+    "flood-color='%23000' flood-opacity='.6'/%3E%3C/filter%3E%3C/defs%3E"
+    "%3Crect x='4' y='12' width='16' height='16' rx='2' fill='%233b82f6' filter='url(%23s)'/%3E"
+    "%3Crect x='10' y='8' width='12' height='12' rx='2' fill='%2360a5fa' filter='url(%23s)'/%3E"
+    "%3Crect x='17' y='4' width='10' height='10' rx='2' fill='%2393c5fd' filter='url(%23s)'/%3E%3C/svg%3E"
+)
 
 
 class SpecError(Exception):
@@ -161,8 +171,8 @@ def resolve_spec(raw: dict, manifests: dict, note=lambda msg: None):
             errors.append(f'layout.sidebar must be "left" or "right"; got {json.dumps(val)}')
         elif key == "sidebar_width" and not (isinstance(val, int) and not isinstance(val, bool) and 120 <= val <= 900):
             errors.append(f"layout.sidebar_width must be an integer between 120 and 900 (px); got {json.dumps(val)}")
-        elif key == "sidebar_collapsible" and not isinstance(val, bool):
-            errors.append(f"layout.sidebar_collapsible must be true or false; got {json.dumps(val)}")
+        elif key in ("sidebar_collapsible", "sidebar_resizable") and not isinstance(val, bool):
+            errors.append(f"layout.{key} must be true or false; got {json.dumps(val)}")
         else:
             layout[key] = val
     spec["layout"] = layout
@@ -318,8 +328,7 @@ def build_html(spec: dict, manifests: dict) -> str:
                 out.append(inner)
             else:  # the header button is built by core/app.js (initGroups)
                 gid = next(group_ids)
-                info = spec["groups"][g]
-                out.append(f'<section class="gv-group" data-gv-group="{html.escape(g)}" data-icon="{info["icon"]}">'
+                out.append(f'<section class="gv-group" data-gv-group="{html.escape(g)}">'
                            f'<div class="gv-group-body" id="gv-group-{gid}">{inner}</div></section>')
             i = j
         return "".join(out)
@@ -359,6 +368,7 @@ def build_html(spec: dict, manifests: dict) -> str:
         '<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n'
         '<meta name="color-scheme" content="light dark">\n'
         f'<title>{html.escape(title)}</title>\n'
+        f'<link rel="icon" type="image/svg+xml" href="{FAVICON}">\n'
         f'<link rel="stylesheet" href="{OL_CSS}">\n'
         '<style>\n' + "\n".join(css) + '</style>\n</head>\n<body>\n'
         + body + "\n"

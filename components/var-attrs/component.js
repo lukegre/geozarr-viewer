@@ -34,11 +34,7 @@ registerComponent({
       panel.replaceChildren(h('div', 'va-title', app.label(v)));
       const rows = attrRows(v.attrs);
       if (rows.length) {
-        const tbody = h('tbody');
-        for (const [k, x] of rows) { const tr = h('tr'); tr.append(h('th', '', k), h('td', '', x)); tbody.append(tr); }
-        const tbl = h('table');
-        tbl.append(tbody);
-        panel.append(tbl);
+        panel.append(kvTable(rows));
       } else {
         panel.append(h('div', 'va-none', 'No attributes'));
       }

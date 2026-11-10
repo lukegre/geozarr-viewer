@@ -7,8 +7,3 @@
 .gv-info-panel h2 { margin: 8px 0 4px; font-size: 12px; font-weight: 600; color: var(--gv-muted);
   text-transform: uppercase; letter-spacing: .04em; }
 .gv-info-panel h2:first-child { margin-top: 0; }
-.gv-info-panel table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.gv-info-panel th, .gv-info-panel td { padding: 3px 6px; text-align: left; vertical-align: top;
-  border-top: 1px solid var(--gv-card-line); overflow-wrap: anywhere; }
-.gv-info-panel th { width: 32%; font-weight: 600; color: var(--gv-muted); }
-.gv-info-panel td { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }

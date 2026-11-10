@@ -37,6 +37,12 @@
 .gv-app[data-sidebar="right"].collapsed .gv-sbtoggle { left: 6px; right: auto; }
 .gv-app.collapsed .gv-sbtoggle svg { transform: rotate(180deg); }
 .gv-app.collapsed .gv-sidebar > .gv-slot { display: none; }
+/* resize handle on the sidebar's inner edge (core/app.js initSidebarResize); hidden while collapsed */
+.gv-sbresize { position: absolute; top: 0; bottom: 0; right: 0; width: 6px; z-index: 3; cursor: col-resize; touch-action: none; }
+.gv-app[data-sidebar="right"] .gv-sbresize { right: auto; left: 0; }
+.gv-sbresize:hover, .gv-app.resizing .gv-sbresize { background: var(--gv-card-line); }
+.gv-app.collapsed .gv-sbresize { display: none; }
+.gv-app.resizing { cursor: col-resize; user-select: none; }
 .gv-spine { display: none; }
 .gv-app.collapsed .gv-spine { display: block; position: absolute; top: 44px; bottom: 12px; left: 0; right: 0; padding: 0;
   border: 0; background: transparent; color: var(--gv-muted); font: inherit; overflow: hidden; }
@@ -54,7 +60,13 @@
 .gv-group-chev { display: inline-grid; place-items: center; transition: transform .15s; }
 .gv-group.collapsed .gv-group-chev { transform: rotate(-90deg); }
 .gv-group-body { display: flex; flex-direction: column; gap: var(--gv-sp); }
-.gv-group-body[hidden] { display: none; }
+/* settings in a group: label left, control right, every select / number input 45 % of its box so they line up
+   (the box = content + 2 x 12px padding + 2 x 1px border); boxes toned down halfway towards the sidebar (selects
+   stay card-coloured), border kept */
+.gv-group-body > .gv-panel { background: color-mix(in srgb, var(--gv-card) 50%, var(--gv-sidebar)); }
+.gv-group-body .gv-row { justify-content: space-between; }
+.gv-group-body .gv-row > select, .gv-group-body .gv-row > input, .gv-group-body .gv-dim-roles select {
+  box-sizing: border-box; width: calc((100% + 26px) * .45); min-width: 0; flex: none; }
 
 .gv-main { grid-area: main; position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .gv-mapwrap { position: relative; flex: 1; min-height: 0; overflow: hidden; }

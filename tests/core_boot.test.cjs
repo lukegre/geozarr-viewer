@@ -12,17 +12,21 @@ test('blank viewer: basemaps only, no error, components built', async () => {
   assert.equal(app.blank, true);
   assert.equal(log.errors.length, 0, JSON.stringify(log.errors));
   const map = app.state.map;
-  assert.equal(map.layers.length, 3);  // light, dark, osm
+  assert.equal(map.layers.length, 6);  // light, dark, osm, satellite, land (water), land on top
   assert.equal(app.state.basemap, 'dark');
-  assert.deepEqual(map.layers.map((l) => l.visible), [false, true, false]);
+  assert.deepEqual(map.layers.map((l) => l.visible), [false, true, false, false, false, false]);
   app.layers.setBasemap('osm');
-  assert.deepEqual(map.layers.map((l) => l.visible), [false, false, true]);
+  assert.deepEqual(map.layers.map((l) => l.visible), [false, false, true, false, false, false]);
   // basemap component built its selector
   const root = els['q:[data-gv-component="basemap"]'];
   const select = root.children.find((c) => c.tag === 'select');
-  assert.deepEqual(select.options.map((o) => o.value), ['light', 'dark', 'osm', 'none']);
+  assert.deepEqual(select.options.map((o) => o.value), ['light', 'dark', 'osm', 'satellite', 'land', 'none']);
   select.value = 'light'; select.fire('change');
   assert.equal(app.state.basemap, 'light');
+  app.layers.setBasemap('satellite');
+  assert.deepEqual(map.layers.map((l) => l.visible), [false, false, false, true, false, false]);
+  app.layers.setBasemap('land');
+  assert.deepEqual(map.layers.map((l) => l.visible), [false, false, false, false, true, true]);
   assert.equal(app.state.selected.length, 0);
 });
 
@@ -44,7 +48,7 @@ test('store: URL state, selection order, world copies, events', async () => {
   assert.equal(app.style.isExplicit('sst'), false);
   assert.equal(app.layers.opacityOf('sst'), 0.5);
   const map = app.state.map;
-  assert.equal(map.layers.length, 3 + 6);  // basemaps + 3 world copies per variable
+  assert.equal(map.layers.length, 6 + 6);  // basemaps + 3 world copies per variable
   assert.equal(app.layers.group('sst').layers.length, 3);
   assert.equal(app.layers.group('sst').layers[0].opacity, 0.5);
   assert.deepEqual(plain(app.layers.group('sst').sources[0].dims), {time: 1});
@@ -63,7 +67,7 @@ test('store: URL state, selection order, world copies, events', async () => {
   assert.equal(app.style.get('sst').vmin, 285);
   app.layers.setVisible('sst', false);
   assert.equal(app.layers.group('sst'), undefined);
-  assert.equal(map.layers.length, 3 + 3);
+  assert.equal(map.layers.length, 6 + 3);
   app.layers.setVisible('sst', true);
   assert.equal(app.layers.group('sst').layers.length, 3);
   app.layers.deselect('chl');
@@ -166,7 +170,7 @@ test('full preset builds and boots; Global settings group header toggles the bod
   const {app, log, groupEls, store, spec} = await boot({preset: 'full', openStore: 'cfg'});
   assert.equal(log.errors.length, 0, JSON.stringify(log.errors));
   assert.deepEqual(spec.components.filter((c) => c.group).map((c) => [c.name, c.slot]),
-    ['label-mode', 'basemap', 'dim-roles', 'cmap-sources', 'center-lon'].map((n) => [n, 'sidebar-bottom']));
+    ['label-mode', 'dim-roles', 'center-lon', 'basemap', 'cmap-sources'].map((n) => [n, 'sidebar-bottom']));
   assert.equal(groupEls.length, 1);
   const [section] = groupEls;
   const body = section.children.find((c) => c.className === 'gv-group-body');

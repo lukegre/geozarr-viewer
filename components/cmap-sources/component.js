@@ -2,7 +2,7 @@
 // Reference: initCmapToggle, syncCmapBoxes, setCmapShow. The state and the rule live in app.style.setSourceShown.
 
 const CMAP_SOURCES = [['core', 'matplotlib'], ['cmocean', 'cmocean'], ['cmasher', 'cmasher']];
-const ONLY_ONE = 'At least one colourmap source must stay selected';
+const ONLY_ONE = 'At least one colormap source must stay selected';
 
 // syncCmapBoxes: checkbox state per source for `show` ({core, cmocean, cmasher} -> bool); the only source still on
 // is disabled so it cannot be switched off.
@@ -19,7 +19,7 @@ registerComponent({
   init(app, root) {
     root.classList.add('gv-panel');
     root.hidden = true;  // blank viewer: no colourmap selects
-    root.append(h('div', 'cs-title', 'Colourmaps'));
+    root.append(h('div', 'cs-title', 'Colormaps'));
     const row = h('div', 'cs-boxes');
     root.append(row);
     const boxes = {};

@@ -3,7 +3,6 @@
   "description": "Compact variable picker: one select (single variable) or a checklist (several variables)",
   "slots": ["topbar", "sidebar", "sidebar-bottom", "overlay-tl", "overlay-tr", "overlay-bl", "overlay-br"],
   "default_slot": "topbar",
-  "requires": [],
   "conflicts": ["variable-cards"],
   "options": {
     "multiple": {"type": "bool", "default": false, "doc": "checklist: several variables at once (each checked one is a layer; checking adds it on top)"},

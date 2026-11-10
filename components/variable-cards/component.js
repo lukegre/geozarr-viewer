@@ -29,7 +29,7 @@ registerComponent({
     const sections = opts.sections !== false, drag = opts.drag !== false, showOther = opts.show_other !== false;
     const OTHER_KEY = 'other-collapsed';  // reference OTHER_KEY
     const hasAttrs = app.spec.components.some((c) => c.name === 'var-attrs');
-    const cards = new globalThis.Map();  // name -> {el, title, meta, longname, info, gear, settings, visibility, remove}
+    const cards = new globalThis.Map();  // name -> {el, title, longname, info, gear, visibility, remove, handle}
     let otherCollapsed = app.storage.get(OTHER_KEY) === '1';
     let dragged = null;
     const open = new Set();  // cards whose settings are expanded
@@ -57,8 +57,9 @@ registerComponent({
       el.setAttribute('role', 'button');
       const top = h('div', 'vc-top');
       const title = h('div', 'vc-name');
+      let handle = null;
       if (drag) {
-        const handle = h('span', 'gv-iconbtn vc-handle', '⠿');
+        handle = h('span', 'gv-iconbtn vc-handle', '⠿');
         handle.setAttribute('role', 'img');
         handle.draggable = true;
         handle.title = 'Drag to reorder or move between Selected and Other';
@@ -72,7 +73,6 @@ registerComponent({
         });
         handle.addEventListener('dragend', () => { dragged = null; el.classList.remove('dragging'); clearFeedback(); });
         top.append(handle);
-        el.handle = handle;
       }
       top.append(title);
       const button = (cls, html, onclick) => {
@@ -106,7 +106,7 @@ registerComponent({
       settings.addEventListener('click', (e) => e.stopPropagation());
       el.append(settings);
       const sync = () => { gear.hidden = !settings.hasChildNodes(); };
-      if (typeof MutationObserver !== 'undefined') new MutationObserver(sync).observe(settings, {childList: true});
+      new MutationObserver(sync).observe(settings, {childList: true});
       gear.hidden = true;
       app.bus.emit('card:settings', {name, el: settings});
       sync();
@@ -114,7 +114,7 @@ registerComponent({
       el.addEventListener('keydown', (e) => {
         if (e.target === el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); app.layers.select(name); }
       });
-      cards.set(name, {el, title, meta, longname, info, gear, settings, visibility, remove, handle: el.handle});
+      cards.set(name, {el, title, longname, info, gear, visibility, remove, handle});
       return el;
     }
 

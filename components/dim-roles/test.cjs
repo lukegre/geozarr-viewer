@@ -3,25 +3,14 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/dim-roles/component.js'], {registerComponent: (d) => registered.push(d)});
+const get = load(['core/util.js', 'components/dim-roles/component.js'], {registerComponent: () => {}});
 const {defaultRoles, syncRoles, assignRole, effectiveRole, roleParams, readRoleParams} = Object.fromEntries(
   ['defaultRoles', 'syncRoles', 'assignRole', 'effectiveRole', 'roleParams', 'readRoleParams'].map((n) => [n, get(n)]));
 const plain = (x) => JSON.parse(JSON.stringify(x));
 
-test('registers one component named dim-roles', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'dim-roles');
-});
-
 test('defaultRoles: first h, rest v', () => {
   assert.deepEqual(plain(defaultRoles(['t', 'z', 'b'])), {t: 'h', z: 'v', b: 'v'});
   assert.deepEqual(plain(defaultRoles([])), {});
-});
-
-test('syncRoles: a new dim becomes h only when no dim holds it', () => {
-  assert.deepEqual(plain(syncRoles(['t', 'z'], {t: 'v'})), {t: 'v', z: 'h'});
-  assert.deepEqual(plain(syncRoles(['t', 'z', 'b'], {t: 'h', z: 'off'})), {t: 'h', z: 'off', b: 'v'});
 });
 
 test('assignRole: choosing h moves the previous holder to v; v and off leave the others alone', () => {

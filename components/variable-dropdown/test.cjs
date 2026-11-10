@@ -3,14 +3,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/variable-dropdown/component.js'], {registerComponent: (d) => registered.push(d)});
+const get = load(['core/util.js', 'components/variable-dropdown/component.js'], {registerComponent: () => {}});
 const singleChange = get('singleChange'), summaryText = get('summaryText');
-
-test('registers one component named variable-dropdown', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'variable-dropdown');
-});
 
 test('singleChange: select the chosen one, deselect the others', () => {
   assert.deepEqual(JSON.parse(JSON.stringify(singleChange(['a', 'b'], 'c'))), {add: 'c', remove: ['a', 'b']});

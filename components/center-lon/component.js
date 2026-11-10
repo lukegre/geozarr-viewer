@@ -10,7 +10,7 @@ function parseLon(text) {
 registerComponent({
   name: 'center-lon',
   init(app, root) {
-    root.classList.add('gv-row');
+    root.classList.add('gv-panel', 'gv-row');
     root.hidden = true;
     const inp = h('input');
     inp.type = 'number'; inp.step = 'any'; inp.id = 'gv-center-lon';

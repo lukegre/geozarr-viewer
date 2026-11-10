@@ -3,8 +3,6 @@
   "description": "One slider per Vertical dimension (e.g. depth); Up/Down arrow keys step the first one",
   "slots": ["overlay-br", "overlay-bl", "overlay-tl", "overlay-tr", "sidebar", "sidebar-bottom"],
   "default_slot": "overlay-br",
-  "requires": [],
-  "conflicts": [],
   "options": {
     "orientation": {"type": "enum", "choices": ["vertical", "horizontal"], "default": "vertical", "doc": "direction of the sliders"},
     "keys": {"type": "bool", "default": true, "doc": "Up/Down arrow keys step the first slider"}

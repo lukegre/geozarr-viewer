@@ -3,7 +3,5 @@
   "description": "\"Label by\" select: Array name or Long name for variables across the page",
   "slots": ["sidebar", "sidebar-bottom", "topbar"],
   "default_slot": "sidebar",
-  "requires": [],
-  "conflicts": [],
   "options": {}
 }

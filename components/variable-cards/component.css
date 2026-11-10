@@ -1,7 +1,5 @@
 .gv-variable-cards { display: flex; flex-direction: column; gap: var(--gv-sp); }
-.gv-variable-cards .vc-sec { display: flex; flex-direction: column; gap: var(--gv-sp); }
-.gv-variable-cards .vc-list { display: flex; flex-direction: column; gap: var(--gv-sp); }
-.gv-variable-cards .vc-sec[hidden], .gv-variable-cards .vc-list[hidden] { display: none; }
+.gv-variable-cards .vc-sec, .gv-variable-cards .vc-list { display: flex; flex-direction: column; gap: var(--gv-sp); }
 .gv-variable-cards .vc-hint { padding: 0 var(--gv-sp); font-size: 11px; color: var(--gv-muted); }
 .gv-variable-cards .vc-head { margin: 0; padding: 0 2px; font-size: 11px; font-weight: 600; letter-spacing: .06em;
   text-transform: uppercase; color: var(--gv-muted); }
@@ -13,7 +11,6 @@
 
 .gv-variable-cards .vc-card { padding: 12px; border-radius: var(--gv-radius); background: var(--gv-card);
   box-shadow: var(--gv-shadow); border: 1px solid var(--gv-card-line); cursor: pointer; }
-.gv-variable-cards .vc-card[hidden] { display: none; }
 .gv-variable-cards .vc-card:hover { border-color: var(--gv-muted); }
 .gv-variable-cards .vc-card.active { border-color: var(--gv-accent); box-shadow: 0 0 0 1px var(--gv-accent), var(--gv-shadow); }
 .gv-variable-cards .vc-card.dragging { opacity: .45; }
@@ -29,7 +26,6 @@
 .gv-variable-cards .vc-gear, .gv-variable-cards .vc-visibility, .gv-variable-cards .vc-remove { display: none; }
 .gv-variable-cards .vc-card.selected .vc-gear, .gv-variable-cards .vc-card.selected .vc-visibility,
 .gv-variable-cards .vc-card.selected .vc-remove { display: grid; }
-.gv-variable-cards .vc-gear[hidden], .gv-variable-cards .vc-info[hidden] { display: none !important; }
 .gv-variable-cards .vc-settings { display: none; flex-direction: column; gap: var(--gv-sp); margin-top: var(--gv-sp);
   font-size: 12px; color: var(--gv-muted); cursor: default; }
 .gv-variable-cards .vc-card.selected.open .vc-settings { display: flex; }

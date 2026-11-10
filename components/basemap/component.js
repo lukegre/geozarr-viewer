@@ -15,6 +15,6 @@ registerComponent({
     root.append(sel);
     sel.addEventListener('change', () => app.layers.setBasemap(sel.value));
     app.bus.on('basemap:changed', (id) => { sel.value = id; });
-    app.layers.setBasemap(opts.default || 'dark');
+    app.layers.setBasemap(opts.default);
   },
 });

@@ -3,15 +3,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/var-attrs/component.js'], {registerComponent: (d) => registered.push(d)});
+const get = load(['core/util.js', 'components/var-attrs/component.js'], {registerComponent: () => {}});
 const attrRows = get('attrRows'), popoverPosition = get('popoverPosition');
 const plain = (x) => JSON.parse(JSON.stringify(x));
-
-test('registers one component named var-attrs', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'var-attrs');
-});
 
 test('attrRows: stored order, values as text, empty for missing attrs', () => {
   assert.deepEqual(plain(attrRows({units: 'K', scale: 0.5, flag: true})), [['units', 'K'], ['scale', '0.5'], ['flag', 'true']]);

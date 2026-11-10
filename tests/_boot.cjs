@@ -65,6 +65,7 @@ function fakeOl(log) {
     setStyle(s) { this.style = s; log.styles.push(s); }
     setOpacity(x) { this.opacity = x; }
     setVisible(v) { this.visible = v; }
+    setBackground(c) { this.background = c; }
     dispose() { this.disposed = true; }
     getRenderer() { return null; }
   }
@@ -97,19 +98,20 @@ function fakeOl(log) {
   }
   const noop = () => () => {};
   return {Map: FakeMap, WMTSTileGrid: class {}, getView: async () => ({zoom: 2}), withExtentCenter: noop, withHigherResolutions: noop,
-    withLowerResolutions: noop, withZoom: noop, WebGLTileLayer: FakeLayer, TileLayer: FakeLayer, GeoZarr: FakeSource, OSM: class {},
+    withLowerResolutions: noop, withZoom: noop, WebGLTileLayer: FakeLayer, TileLayer: FakeLayer, GeoZarr: FakeSource, OSM: class {}, XYZ: class {},
+    VectorLayer: FakeLayer, VectorSource: class {}, TopoJSON: class {},
     register: () => {}, toLonLat: (c) => c, proj4: {defs() {}}, OlFetchStore: class { async get() {} async getRange() {} }};
 }
 
 const FAKE_CFG = {
   title: 'demo.zarr', source: 's3://b/demo.zarr', store_url: 'https://h.org/b/demo.zarr', endpoint: 'https://h.org',
   variables: [
-    {name: 'sst', dims: ['time'], categorical: false, units: 'K', long_name: 'Sea surface temperature', display_name: 'SST', vmin: 280, vmax: 300, ticks: [], limits_from_attrs: false, attrs: {}},
-    {name: 'chl', dims: ['time'], categorical: false, units: 'mg m-3', long_name: '', display_name: 'chl', vmin: 0, vmax: 5, ticks: [], limits_from_attrs: false, attrs: {}},
+    {name: 'sst', dims: ['time'], categorical: false, units: 'K', long_name: 'Sea surface temperature', display_name: 'SST', vmin: 280, vmax: 300, limits_from_attrs: false, attrs: {}},
+    {name: 'chl', dims: ['time'], categorical: false, units: 'mg m-3', long_name: '', display_name: 'chl', vmin: 0, vmax: 5, limits_from_attrs: false, attrs: {}},
   ],
   dims: {time: {size: 3, labels: ['2020-01-01T00:00:00Z', '2020-01-02T00:00:00Z', '2020-01-03T00:00:00Z'],
     iso: ['2020-01-01T00:00:00Z', '2020-01-02T00:00:00Z', '2020-01-03T00:00:00Z']}},
-  attrs: {}, levels: 3, bbox: [-180, -90, 180, 90], global: true, basemap_default: true,
+  attrs: {}, levels: 3, bbox: [-180, -90, 180, 90], global: true,
   crs: {code: 'EPSG:4326', name: 'EPSG:4326', proj4: null, projection: null},
 };
 
@@ -165,14 +167,15 @@ async function boot({preset = 'minimal', search = '', openStore, specToml} = {})
       createElement: (tag) => new El(tag)},
     location: {search, href: `http://localhost:8780/index.html${search}`, origin: 'http://localhost:8780', pathname: '/index.html', protocol: 'http:',
       assign(u) { log.assigned = u; }, replace(u) { log.replaced = u; }},
+    getComputedStyle: () => ({getPropertyValue: () => ''}),
     history: {replaceState: (_s, _t, u) => log.urls.push(u)},
     localStorage: {getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, v), removeItem: (k) => store.delete(k)},
   });
   win.document = ctx.document;
   const ol = fakeOl(log);
-  const fn = vm.runInContext(`(async function(Map, WMTSTileGrid, getView, withExtentCenter, withHigherResolutions, withLowerResolutions, withZoom, WebGLTileLayer, TileLayer, GeoZarr, OSM, register, toLonLat, proj4, OlFetchStore){\n${src}\n})`, ctx, {filename: 'page-module.js'});
+  const fn = vm.runInContext(`(async function(Map, WMTSTileGrid, getView, withExtentCenter, withHigherResolutions, withLowerResolutions, withZoom, WebGLTileLayer, TileLayer, GeoZarr, OSM, XYZ, VectorLayer, VectorSource, TopoJSON, register, toLonLat, proj4, OlFetchStore){\n${src}\n})`, ctx, {filename: 'page-module.js'});
   await fn(ol.Map, ol.WMTSTileGrid, ol.getView, ol.withExtentCenter, ol.withHigherResolutions, ol.withLowerResolutions, ol.withZoom,
-    ol.WebGLTileLayer, ol.TileLayer, ol.GeoZarr, ol.OSM, ol.register, ol.toLonLat, ol.proj4, ol.OlFetchStore);
+    ol.WebGLTileLayer, ol.TileLayer, ol.GeoZarr, ol.OSM, ol.XYZ, ol.VectorLayer, ol.VectorSource, ol.TopoJSON, ol.register, ol.toLonLat, ol.proj4, ol.OlFetchStore);
   const app = win.gvApp;
   return {app, log, els, ctx, html, docListeners, groupEls, store, spec: JSON.parse(specJson)};
 }

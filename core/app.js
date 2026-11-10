@@ -36,7 +36,47 @@ function initLayout(app) {
   set(app.storage.get('sidebar-collapsed') === '1');
 }
 
-// Collapsible groups (spec `group`): the assembler emits <section class="gv-group" data-gv-group data-icon> with the body
+// Core owns the sidebar resize handle (layout option sidebar_resizable): drag the inner edge, the width is stored per
+// browser; double-click resets it to the spec width. The handle is hidden while the sidebar is collapsed.
+const SB_MIN = 120, SB_MAX = 900;
+function initSidebarResize(app) {
+  const root = $('gv-app');
+  const side = root.querySelector('.gv-sidebar');
+  if (!side || !app.spec.layout.sidebar_resizable) return;
+  const right = root.dataset.sidebar === 'right';
+  const clampW = (w) => Math.round(Math.max(SB_MIN, Math.min(SB_MAX, window.innerWidth - 200, w)));
+  const setW = (w) => { root.style.setProperty('--gv-sb-width', w + 'px'); window.dispatchEvent(new Event('resize')); };
+  const handle = h('div', 'gv-sbresize');
+  handle.setAttribute('role', 'separator');
+  handle.setAttribute('aria-orientation', 'vertical');
+  handle.title = 'Drag to resize, double-click to reset';
+  side.append(handle);
+  let drag = null;
+  handle.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    drag = {x: e.clientX, w: side.getBoundingClientRect().width};
+    handle.setPointerCapture(e.pointerId);
+    root.classList.add('resizing');
+  });
+  handle.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    setW(clampW(drag.w + (e.clientX - drag.x) * (right ? -1 : 1)));
+  });
+  const end = () => {
+    if (!drag) return;
+    drag = null;
+    root.classList.remove('resizing');
+    app.storage.set('sidebar-width', String(Math.round(side.getBoundingClientRect().width)));
+  };
+  handle.addEventListener('pointerup', end);
+  handle.addEventListener('pointercancel', end);
+  handle.addEventListener('dblclick', () => { app.storage.remove('sidebar-width'); setW(app.spec.layout.sidebar_width); });
+  const stored = +app.storage.get('sidebar-width');
+  if (stored > 0) setW(clampW(stored));
+}
+
+// Collapsible groups (spec `group`): the assembler emits <section class="gv-group" data-gv-group> with the body
 // as its only child; this adds the header button (icon, title, chevron). The state is stored per group name (D-46).
 function initGroups(app) {
   for (const section of document.querySelectorAll('.gv-group')) {
@@ -60,7 +100,7 @@ function initGroups(app) {
     head.addEventListener('click', () => set(!body.hidden, true));
     section.prepend(head);
     const stored = app.storage.get('group:' + name);
-    set(stored === null || stored === undefined ? !!info.collapsed : stored === '1', false);
+    set(stored === null ? !!info.collapsed : stored === '1', false);
   }
 }
 
@@ -124,6 +164,7 @@ async function bootViewer() {
 
   noHeadSuffixReads(OlFetchStore);  // D-56
   initLayout(app);
+  initSidebarResize(app);
   initGroups(app);
   initErrors(app);
 

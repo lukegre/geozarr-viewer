@@ -3,8 +3,6 @@
   "description": "Colourmap, Reversed, Log scale, Range and Auto / Min/Max / Symmetric buttons, opacity. In a variable card or as its own panel",
   "slots": ["sidebar", "sidebar-bottom", "overlay-tl", "overlay-tr", "overlay-bl", "overlay-br"],
   "default_slot": "sidebar",
-  "requires": [],
-  "conflicts": [],
   "option_requires": {"placement": {"card": ["variable-cards"]}},
   "options": {
     "placement": {"type": "enum", "choices": ["card", "panel"], "default": "card", "doc": "card: fill the settings container a variable-cards component offers; panel: own panel with a variable select (works alone)"},

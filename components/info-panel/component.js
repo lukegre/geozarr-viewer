@@ -1,18 +1,6 @@
-// Dataset information: an info button and a panel. Reference: buildInfo, attrValue (D-32, D-55). Rows: title, store,
+// Dataset information: an info button and a panel. Reference: buildInfo (D-32, D-55; attribute values arrive formatted in cfg.attrs). Rows: title, store,
 // CRS, bbox, variables, dims, levels, then the global attributes. In the sidebar the panel opens inline under the
 // button; elsewhere it is a popover beside the button, kept inside the viewport.
-
-// D-55: attribute display values, as `_attr_value` in preview.py (long values are cut at 2000 characters).
-function attrValue(x) {
-  let out;
-  if (typeof x === 'boolean') out = x ? 'True' : 'False';
-  else if (typeof x === 'number') out = Number.isFinite(x) ? x : String(x);
-  else if (typeof x === 'string') out = x;
-  else if (Array.isArray(x)) out = x.map((i) => typeof i === 'string' ? i : (i && typeof i === 'object' ? JSON.stringify(i) : String(i))).join(', ');
-  else if (x && typeof x === 'object') out = JSON.stringify(x);
-  else out = x == null ? 'None' : String(x);
-  return typeof out === 'string' && out.length > 2000 ? out.slice(0, 2000) + '…' : out;
-}
 
 // Sections [{title, rows: [[key, value, id?]]}] for a dataset config; `label` names a variable (array or long name).
 function infoSections(cfg, blank, label) {
@@ -31,7 +19,7 @@ function infoSections(cfg, blank, label) {
   }
   const sections = [{title: 'Metadata', rows}];
   const attrs = Object.entries(cfg.attrs || {});
-  if (attrs.length) sections.push({title: 'Global attributes', rows: attrs.map(([k, v]) => [k, attrValue(v)])});
+  if (attrs.length) sections.push({title: 'Global attributes', rows: attrs});
   return sections;
 }
 
@@ -66,15 +54,7 @@ registerComponent({
       panel.replaceChildren();
       for (const {title, rows} of infoSections(app.cfg, app.blank, (v) => app.label(v))) {
         panel.append(h('h2', '', title));
-        const tbl = h('table'), body = h('tbody');
-        for (const [k, v, id] of rows) {
-          const tr = h('tr'), td = h('td', '', String(v));
-          if (id) td.dataset.id = id;
-          tr.append(h('th', '', k), td);
-          body.append(tr);
-        }
-        tbl.append(body);
-        panel.append(tbl);
+        panel.append(kvTable(rows));
       }
       place();
     }

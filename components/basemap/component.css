@@ -1,2 +1,2 @@
-.gv-basemap { padding: 4px 8px; }
+.gv-topbar .gv-basemap { padding: 4px 8px; }  /* compact in the top bar; full panel padding elsewhere */
 .gv-basemap select { min-width: 84px; }

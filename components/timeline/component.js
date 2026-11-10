@@ -1,20 +1,8 @@
 // Horizontal timeline for the dim whose role is 'h'. Reference: buildScrubber/buildTimeline (rebuilt when the dims
-// or roles change), stepPositions, dateTicks, indexTicks, stopPlay, scrubKeyDown (D-50), syncRoles (D-40).
+// or roles change), stepPositions, dateTicks, indexTicks, stopPlay, scrubKeyDown (D-50), syncRoles (D-40, core/util.js).
 // Roles live in app.state.roles ('h' | 'v' | 'off'); without dim-roles the defaults apply (first dim h).
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const dimLabel = (d, i) => (d.labels && d.labels[i] !== undefined ? d.labels[i] : String(i));
-
-// Keep the role of every dim that has one; a new dim is horizontal only if no dim holds that role (D-40).
-// Same function in dim-sliders and dim-roles: it is idempotent, so the order the components run in does not matter.
-function syncRoles(dimNames, roles) {
-  let holder = dimNames.find((d) => roles[d] === 'h');
-  for (const d of dimNames) {
-    if (!roles[d]) roles[d] = holder === undefined ? 'h' : 'v';
-    if (roles[d] === 'h') { if (holder === undefined) holder = d; else if (holder !== d) roles[d] = 'v'; }
-  }
-  return roles;
-}
 
 // Position of every step along the rail, 0..1: proportional to time for ISO dims, else evenly spaced.
 function stepPositions(d) {
@@ -167,7 +155,7 @@ registerComponent({
         if (timer) return stopPlay();
         playBtn.innerHTML = ICON.pause;
         playBtn.setAttribute('aria-label', 'Pause');
-        timer = setInterval(() => setStep((state.dims[name] + 1) % n), 1000 / (opts.fps > 0 ? opts.fps : 1.25));
+        timer = setInterval(() => setStep((state.dims[name] + 1) % n), 1000 / opts.fps);
       });
 
       // hide tick labels that would collide with the previous one
@@ -180,8 +168,7 @@ registerComponent({
           else right = r.right;
         }
       };
-      if (window.ResizeObserver) new ResizeObserver(layoutLabels).observe(track);
-      else window.addEventListener('resize', layoutLabels);
+      new ResizeObserver(layoutLabels).observe(track);
       cur = {name, step, render};
       render();
       layoutLabels();
@@ -190,9 +177,8 @@ registerComponent({
     // Arrow keys (D-50): Left/Right step the horizontal dim; ignored while typing in a field or with modifiers.
     if (opts.keys !== false) {
       document.addEventListener('keydown', (e) => {
-        if (!cur || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if (!cur || !plainKey(e)) return;
         if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-        if (e.target && e.target.closest && e.target.closest('input, select, textarea, [contenteditable]')) return;
         e.preventDefault();
         stopPlay();
         cur.step(e.key === 'ArrowRight' ? 1 : -1);

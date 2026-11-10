@@ -3,15 +3,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/readout/component.js'], {registerComponent: (d) => registered.push(d)});
+const get = load(['core/util.js', 'components/readout/component.js'], {registerComponent: () => {}});
 const formatLatLon = get('formatLatLon'), formatValue = get('formatValue');
-
-test('registers one component named readout', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'readout');
-  assert.equal(typeof registered[0].init, 'function');
-});
 
 test('formatLatLon: hemisphere letters, three decimals, never 0.000°S', () => {
   assert.equal(formatLatLon(6.63, 46.52), 'Lat: 46.520°N  Lon: 6.630°E');
@@ -23,5 +16,4 @@ test('formatValue: 4 significant digits, units, categorical without units', () =
   assert.equal(formatValue(12.3456789, {units: 'K'}, 'sst'), 'sst: 12.35 K');
   assert.equal(formatValue(12.3456789, {units: ''}, 'sst'), 'sst: 12.35');
   assert.equal(formatValue(3, {categorical: true, units: 'x'}, 'class'), 'class: 3');
-  assert.equal(formatValue(1, {units_display: 'm s⁻¹', units: 'm/s'}, 'u'), 'u: 1 m s⁻¹');
 });

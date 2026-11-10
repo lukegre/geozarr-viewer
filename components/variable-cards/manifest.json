@@ -3,7 +3,6 @@
   "description": "Variable cards: Selected/Other sections, click to select, drag to reorder, eye, remove, per-card settings and info",
   "slots": ["sidebar"],
   "default_slot": "sidebar",
-  "requires": [],
   "conflicts": ["variable-dropdown"],
   "options": {
     "sections": {"type": "bool", "default": true, "doc": "Selected/Other sections; false = one flat list (all variables, selected ones highlighted)"},

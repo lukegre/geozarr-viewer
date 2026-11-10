@@ -3,8 +3,6 @@
   "description": "Pointer value of each visible variable plus lat/lon",
   "slots": ["overlay-br", "overlay-bl", "overlay-tl", "overlay-tr", "bottom", "sidebar", "sidebar-bottom"],
   "default_slot": "overlay-br",
-  "requires": [],
-  "conflicts": [],
   "options": {
     "latlon": {"type": "bool", "default": true, "doc": "show the lat/lon line"}
   }

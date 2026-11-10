@@ -5,16 +5,6 @@
 const ROLES = [['h', 'Horizontal'], ['v', 'Vertical'], ['off', 'Off']];
 const defaultRoles = (dims) => Object.fromEntries(dims.map((d, i) => [d, i === 0 ? 'h' : 'v']));
 
-// Same function as in timeline and dim-sliders (idempotent): a new dim is horizontal only if no dim holds that role.
-function syncRoles(dimNames, roles) {
-  let holder = dimNames.find((d) => roles[d] === 'h');
-  for (const d of dimNames) {
-    if (!roles[d]) roles[d] = holder === undefined ? 'h' : 'v';
-    if (roles[d] === 'h') { if (holder === undefined) holder = d; else if (holder !== d) roles[d] = 'v'; }
-  }
-  return roles;
-}
-
 // Choosing Horizontal moves the previous holder to Vertical (D-40).
 function assignRole(roles, dimNames, name, role) {
   if (role === 'h') for (const d of dimNames) if (d !== name && roles[d] === 'h') roles[d] = 'v';
@@ -51,6 +41,7 @@ registerComponent({
     const {state, bus} = app;
     const has = (n) => app.spec.components.some((c) => c.name === n);
     const hasTimeline = has('timeline'), hasSliders = has('dim-sliders');
+    root.classList.add('gv-panel');
     root.hidden = true;
 
     // `slider.<dim>` URL entry; the defaults come from the union at write time. Two `h` keep the first (syncRoles).

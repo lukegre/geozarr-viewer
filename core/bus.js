@@ -7,10 +7,6 @@ function createBus() {
       handlers.get(event).add(fn);
       return () => bus.off(event, fn);
     },
-    once(event, fn) {
-      const off = bus.on(event, (payload) => { off(); fn(payload); });
-      return off;
-    },
     off(event, fn) { handlers.get(event)?.delete(fn); },
     emit(event, payload) {
       for (const fn of [...(handlers.get(event) || [])]) {

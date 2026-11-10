@@ -47,10 +47,9 @@ test('defaultStyle takes limits from the variable', () => {
     {cmap: 'plasma', reversed: false, vmin: 1, vmax: 9});
 });
 
-test('stopsOf: reversed copy, missing map falls back to the ramp', () => {
+test('stopsOf: reversed copy, input not mutated', () => {
   const cm = {a: [[1, 1, 1], [2, 2, 2]]};
-  assert.deepEqual(plain(stopsOf({cmap: 'a', reversed: true}, cm, [[9, 9, 9]])), [[2, 2, 2], [1, 1, 1]]);
-  assert.deepEqual(plain(stopsOf({cmap: 'zzz'}, cm, [[9, 9, 9]])), [[9, 9, 9]]);
+  assert.deepEqual(plain(stopsOf({cmap: 'a', reversed: true}, cm)), [[2, 2, 2], [1, 1, 1]]);
   assert.deepEqual(plain(cm.a), [[1, 1, 1], [2, 2, 2]]);  // input not mutated
 });
 

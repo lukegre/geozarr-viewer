@@ -20,7 +20,7 @@ function storeError(message, hint = '', code = 'error') {
 // Config of a viewer without a store: global EPSG:4326 view, basemaps only.
 function blankConfig() {
   return {title: '', source: '', store_url: '', endpoint: '', variables: [], dims: {}, attrs: {}, levels: 0,
-    bbox: [-180, -90, 180, 90], global: true, basemap_default: true,
+    bbox: [-180, -90, 180, 90], global: true,
     crs: {code: 'EPSG:4326', name: 'EPSG:4326', proj4: null, projection: null}};
 }
 
@@ -129,7 +129,7 @@ async function browserConfig(src, endpoint, relay) {
       // D-43: plot defaults from the attrs (categorical ignores them); `cmap` is resolved later, in defaultStyle.
       if (!categorical) [vmin, vmax] = attrLimits(a, vmin, vmax, name);
       const v = {name, dims: extra, categorical, units: String(a.units || ''), long_name: String(a.long_name || ''),
-        display_name: String(a.long_name || name), vmin, vmax, ticks: [],
+        display_name: String(a.long_name || name), vmin, vmax,
         limits_from_attrs: !categorical && hasAttrLimits(a),
         attrs: Object.fromEntries(Object.entries(a).map(([k, x]) => [k, attrValue(x)]))};
       if (!categorical && a.cmap != null) v.cmap = String(a.cmap);
@@ -173,7 +173,8 @@ async function browserConfig(src, endpoint, relay) {
     if (!Array.isArray(bbox) || bbox.length !== 4) throw storeError('Missing spatial bounding box.', '', 'invalid_pyramid');
     return {...blankConfig(), title: src.split('/').filter(Boolean).at(-1), source: src, store_url: url, endpoint: endpoint || '',
       variables, dims, attrs: Object.fromEntries(Object.entries(attrs).filter(([k]) =>
-        !['multiscales', 'zarr_conventions', 'geozarr_pyramid_maker:variables'].includes(k) && !/^(proj|spatial):/.test(k))),
+        !['multiscales', 'zarr_conventions', 'geozarr_pyramid_maker:variables'].includes(k) && !/^(proj|spatial):/.test(k))
+        .map(([k, x]) => [k, attrValue(x)])),
       levels: layout.length, bbox, global: code === 'EPSG:4326' && Math.abs(bbox[2] - bbox[0] - 360) < 1e-6,
       crs: {code, name, proj4: builtin ? null : definition, projection: builtin ? null : name}};
   } catch (e) {

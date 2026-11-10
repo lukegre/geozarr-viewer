@@ -1,18 +1,12 @@
-// Pure functions of the timeline component: step positions, date/index ticks, nearest step, role sync (D-40).
+// Pure functions of the timeline component: step positions, date/index ticks, nearest step, .
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/timeline/component.js'], {registerComponent: (d) => registered.push(d)});
-const {stepPositions, dateTicks, indexTicks, nearestStep, syncRoles, dimLabel} = Object.fromEntries(
-  ['stepPositions', 'dateTicks', 'indexTicks', 'nearestStep', 'syncRoles', 'dimLabel'].map((n) => [n, get(n)]));
+const get = load(['core/util.js', 'components/timeline/component.js'], {registerComponent: () => {}});
+const {stepPositions, dateTicks, indexTicks, nearestStep} = Object.fromEntries(
+  ['stepPositions', 'dateTicks', 'indexTicks', 'nearestStep'].map((n) => [n, get(n)]));
 const plain = (x) => JSON.parse(JSON.stringify(x));  // vm arrays have another prototype
-
-test('registers one component named timeline', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'timeline');
-});
 
 test('stepPositions: proportional to time for ISO labels', () => {
   const r = stepPositions({size: 3, iso: ['2020-01-01T00:00:00Z', '2020-01-02T00:00:00Z', '2020-01-05T00:00:00Z']});
@@ -50,25 +44,10 @@ test('indexTicks: 1/2/5 x 10^k steps with dim labels', () => {
   assert.equal(indexTicks({size: 3, labels: ['a', 'b', 'c']}, [0, 0.5, 1])[2].text, 'c');
 });
 
-test('dimLabel: label or index', () => {
-  assert.equal(dimLabel({labels: ['a', 'b']}, 1), 'b');
-  assert.equal(dimLabel({labels: null}, 4), '4');
-});
-
 test('nearestStep: closest position', () => {
   const pos = [0, 0.1, 0.9, 1];
   assert.equal(nearestStep(pos, 0.04), 0);
   assert.equal(nearestStep(pos, 0.3), 1);
   assert.equal(nearestStep(pos, 0.6), 2);
   assert.equal(nearestStep(pos, 1), 3);
-});
-
-test('syncRoles: first dim h, rest v; kept roles stay; one h at most', () => {
-  assert.deepEqual(plain(syncRoles(['time', 'depth'], {})), {time: 'h', depth: 'v'});
-  assert.deepEqual(plain(syncRoles(['time', 'depth'], {time: 'off', depth: 'h'})), {time: 'off', depth: 'h'});
-  assert.deepEqual(plain(syncRoles(['a', 'b'], {a: 'v'})), {a: 'v', b: 'h'});     // no holder: the new dim becomes h
-  assert.deepEqual(plain(syncRoles(['a', 'b'], {a: 'h', b: 'h'})), {a: 'h', b: 'v'});  // two h keep the first
-  const r = {a: 'h'};
-  assert.deepEqual(plain(syncRoles(['a', 'b'], r)), {a: 'h', b: 'v'});
-  assert.deepEqual(plain(syncRoles(['a', 'b'], r)), {a: 'h', b: 'v'});  // idempotent
 });

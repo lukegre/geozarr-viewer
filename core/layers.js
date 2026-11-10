@@ -28,7 +28,39 @@ function viewOptions(opts, cfg, lon, params) {
   return pinned ? {...opts, center: [x, y], zoom: z} : opts;
 }
 
-const BASEMAPS = [['light', 'Light'], ['dark', 'Dark'], ['osm', 'OSM'], ['none', 'None']];
+// Natural Earth rings that cross the antimeridian (world-atlas keeps them whole, for spherical renderers) streak across
+// a planar map. Unwrap: shift each vertex by 360 so no step exceeds 180 degrees. A ring that ends a full turn from its
+// start goes round a pole (Antarctica): close it through that pole. Coordinates are [lon, lat] in degrees.
+function unwrapRing(ring) {
+  const out = [];
+  let shift = 0;
+  for (let i = 0; i < ring.length; i++) {
+    const [x, y] = ring[i];
+    if (i) {
+      const d = x - ring[i - 1][0];
+      if (d > 180) shift -= 360; else if (d < -180) shift += 360;
+    }
+    out.push([x + shift, y]);
+  }
+  const first = out[0], last = out[out.length - 1];
+  if (Math.abs(last[0] - first[0]) > 180) {
+    const pole = out.reduce((s, p) => s + p[1], 0) < 0 ? -90 : 90;
+    out.push([last[0], pole], [first[0], pole], [...first]);
+  }
+  return out;
+}
+
+// [id, label]; the label names the tile source
+const BASEMAPS = [['light', 'Light (OSM)'], ['dark', 'Dark (OSM)'], ['osm', 'Streets (OSM)'], ['satellite', 'Satellite (Esri)'],
+  ['land', 'Land (Natural Earth)'], ['none', 'None']];
+const ESRI_IMAGERY = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+// Land (vector): Natural Earth 1:50m land polygons (world-atlas TopoJSON, ~0.5 MB, fetched the first time the layer is
+// shown). A plain vector layer, not vector tiles: the view is often EPSG:4326 and OL cannot reproject vector tiles.
+// Two layers: the basemap itself is only the --gv-water background (bottom); the land polygons (--gv-land; by default both are --gv-map-bg) are drawn
+// above every data layer (zIndex), so land masks the data.
+const NE_LAND = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-50m.json';
+const NE_ATTRIBUTION = 'Made with <a href="https://www.naturalearthdata.com/" target="_blank">Natural Earth</a>';
+const ESRI_ATTRIBUTION = 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community';
 
 function createLayers(app) {
   const {state, bus} = app;
@@ -43,9 +75,38 @@ function createLayers(app) {
     return out;
   };
 
-  // One keyless source (OSM); Light/Dark are CSS filters on each layer's own canvas (theme.css).
+  // Keyless sources: OSM (Light/Dark are CSS filters on each layer's own canvas, theme.css) and Esri World Imagery.
   const basemaps = {};
   for (const id of ['light', 'dark', 'osm']) basemaps[id] = new TileLayer({className: `bm-${id}`, source: new OSM(), visible: false});
+  basemaps.satellite = new TileLayer({className: 'bm-satellite', visible: false,
+    source: new XYZ({url: ESRI_IMAGERY, attributions: ESRI_ATTRIBUTION, maxZoom: 19, crossOrigin: 'anonymous'})});
+  // flat style object: a Style instance from ol/style.js is another module copy than the layer's (+esm bundles)
+  const landSource = new VectorSource({url: NE_LAND, format: new TopoJSON({layers: ['land']}),
+    attributions: NE_ATTRIBUTION, wrapX: false});  // own ±360 copies, as the data layers
+  // after loading (degree units only): unwrap the rings, then add copies at -360 / +360 so any centre longitude is covered
+  landSource.on?.('featuresloadend', () => {
+    if (landSource.wrapped || state.map?.getView().getProjection().getUnits() !== 'degrees') return;
+    landSource.wrapped = true;
+    const copies = [];
+    for (const f of landSource.getFeatures()) {
+      const g = f.getGeometry();
+      const polys = g.getType() === 'Polygon' ? [g.getCoordinates()] : g.getCoordinates();
+      const fixed = polys.map((rings) => rings.map(unwrapRing));
+      g.setCoordinates(g.getType() === 'Polygon' ? fixed[0] : fixed);
+      for (const dx of [-360, 360]) { const c = f.clone(); c.getGeometry().translate(dx, 0); copies.push(c); }
+    }
+    landSource.addFeatures(copies);
+  });
+  landSource.on?.('featuresloaderror', () => bus.emit('error', new Error('Land basemap: Natural Earth data unavailable')));
+  basemaps.land = new VectorLayer({className: 'bm-land', visible: false, source: new VectorSource()});  // water background
+  const landTop = new VectorLayer({className: 'bm-land-top', visible: false, zIndex: 100, style: {'fill-color': '#000'},
+    source: landSource});
+  // colours from the theme tokens (theme.css defines them, both default to --gv-map-bg), read each time it is shown so they follow the theme
+  function showLand() {
+    const css = getComputedStyle(document.documentElement);
+    basemaps.land.setBackground(css.getPropertyValue('--gv-water').trim());
+    landTop.setStyle({'fill-color': css.getPropertyValue('--gv-land').trim()});
+  }
 
   function makeLayer(v) {
     const cfg = app.cfg;
@@ -177,6 +238,8 @@ function createLayers(app) {
       if (!BASEMAPS.some(([k]) => k === id)) return;
       state.basemap = id;
       for (const [k, l] of Object.entries(basemaps)) l.setVisible(k === id);
+      landTop.setVisible(id === 'land');
+      if (id === 'land') showLand();
       bus.emit('basemap:changed', id);
     },
     // Rebuilding the view in place is unreliable (a blank map), so reload with the new centre.
@@ -218,7 +281,7 @@ function createLayers(app) {
           .finally(() => { if (detached) for (const l of initial.layers) l.dispose?.(); });
         view.catch((e) => bus.emit('error', e));
       }
-      state.map = new Map({target: app.mapEl, layers: [...Object.values(basemaps), ...dataLayers], view});
+      state.map = new Map({target: app.mapEl, layers: [...Object.values(basemaps), landTop, ...dataLayers], view});
       state.map.on('moveend', app.url.sync);
       state.map.on('rendercomplete', () => { for (const n of vlayers.keys()) bus.emit('layer:rendered', n); });
       bus.on('style:changed', (name) => {

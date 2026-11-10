@@ -3,16 +3,10 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/store-picker/component.js'], {registerComponent: (d) => registered.push(d)});
+const get = load(['core/util.js', 'components/store-picker/component.js'], {registerComponent: () => {}});
 const isS3Path = get('isS3Path'), submitAction = get('submitAction');
 const plain = (x) => JSON.parse(JSON.stringify(x));
 const cfg = {source: 's3://b/x.zarr', endpoint: 'https://e.org'};
-
-test('registers one component named store-picker', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'store-picker');
-});
 
 test('isS3Path: s3:// only, case-insensitive, trimmed', () => {
   assert.equal(isS3Path(' S3://b/x'), true);

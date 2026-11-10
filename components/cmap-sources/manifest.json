@@ -3,7 +3,5 @@
   "description": "Checkboxes for the colourmap libraries listed in the colourmap selects (matplotlib, cmocean, cmasher); at least one stays on",
   "slots": ["sidebar", "sidebar-bottom"],
   "default_slot": "sidebar",
-  "requires": [],
-  "conflicts": [],
   "options": {}
 }

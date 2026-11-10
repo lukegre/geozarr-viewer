@@ -6,7 +6,7 @@ const LABEL_MODES = [['name', 'Array name'], ['long', 'Long name']];
 registerComponent({
   name: 'label-mode',
   init(app, root) {
-    root.classList.add('gv-row');
+    root.classList.add('gv-panel', 'gv-row');
     root.hidden = true;  // no variables yet (and none in the blank viewer)
     const sel = h('select');
     sel.id = 'gv-label-mode';

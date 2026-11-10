@@ -54,11 +54,16 @@ test('hasAttrLimits', () => {
 
 test('attrValue: display strings (D-55)', () => {
   assert.equal(attrValue(true), 'True');
+  assert.equal(attrValue(false), 'False');
+  assert.equal(attrValue(NaN), 'NaN');
+  assert.equal(attrValue('abc'), 'abc');
   assert.equal(attrValue(null), 'None');
   assert.equal(attrValue(3.5), 3.5);
   assert.equal(attrValue(['a', 1, {k: 1}]), 'a, 1, {"k":1}');
   assert.equal(attrValue({a: 1}), '{"a":1}');
-  assert.equal(attrValue('x'.repeat(2500)).length, 2001);
+  const long = attrValue('x'.repeat(2500));
+  assert.equal(long.length, 2001);
+  assert.ok(long.endsWith('…'));
 });
 
 test('noHeadSuffixReads: suffix ranges become one GET with a Range header (D-56), idempotent', async () => {

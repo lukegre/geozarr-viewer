@@ -3,7 +3,5 @@
   "description": "Centre longitude input; only shown for global datasets (changing it reloads the page)",
   "slots": ["sidebar", "sidebar-bottom", "topbar", "overlay-tl", "overlay-tr", "overlay-bl", "overlay-br"],
   "default_slot": "sidebar",
-  "requires": [],
-  "conflicts": [],
   "options": {}
 }

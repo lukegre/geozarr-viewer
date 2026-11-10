@@ -21,6 +21,7 @@ registerComponent({
     if (opts.label !== false) root.append(h('label', '', 'Variable'));
     const names = () => app.cfg.variables.map((v) => v.name);
     let control;  // the select, or the checklist <details>
+    let summary, list;  // checklist only: the <details> button and the checkbox panel
 
     if (!multiple) {
       control = h('select');
@@ -33,8 +34,8 @@ registerComponent({
       });
     } else {
       control = h('details', 'vd-multi');
-      const summary = h('summary', 'gv-btn');
-      const list = h('div', 'vd-list gv-panel');
+      summary = h('summary', 'gv-btn');
+      list = h('div', 'vd-list gv-panel');
       control.append(summary, list);
       root.append(control);
       list.addEventListener('change', (e) => {
@@ -44,8 +45,6 @@ registerComponent({
       // close on a click elsewhere or Escape
       document.addEventListener('click', (e) => { if (control.open && !control.contains(e.target)) control.open = false; });
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') control.open = false; });
-      control.summary = summary;
-      control.list = list;
     }
 
     function rebuild() {
@@ -53,7 +52,7 @@ registerComponent({
         control.replaceChildren(...names().map((n) => new Option(app.label(n), n)));
         control.add(new Option('(none)', ''), 0);
       } else {
-        control.list.replaceChildren(...names().map((n) => {
+        list.replaceChildren(...names().map((n) => {
           const row = h('label', 'vd-item'), box = h('input');
           box.type = 'checkbox';
           box.value = n;
@@ -69,8 +68,8 @@ registerComponent({
         // single: show the top-most selected variable (the last of the bottom-first list), "(none)" when empty
         control.value = sel.at(-1) || '';
       } else {
-        for (const box of control.list.querySelectorAll('input')) box.checked = sel.includes(box.value);
-        control.summary.textContent = summaryText(sel, app.label);
+        for (const box of list.querySelectorAll('input')) box.checked = sel.includes(box.value);
+        summary.textContent = summaryText(sel, app.label);
       }
     }
     app.bus.on('config:loaded', rebuild);

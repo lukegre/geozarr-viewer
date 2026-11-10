@@ -1,6 +1,6 @@
 // Colourmaps, per-variable style state, colour expressions, ticks. Ported from the reference: cmaps/cmapGroups,
 // resolveCmap, defaultStyle, loadStyle, styleOf, stopsOf, effectiveLog, gradientCss, niceTicks, niceLogTicks, colorExpr.
-// Data (COLORMAPS, COLORMAP_GROUPS, RAMP) lives in colormaps.js. The pure functions come first; createStyle builds app.style.
+// Data (COLORMAPS, COLORMAP_GROUPS) lives in colormaps.js. The pure functions come first; createStyle builds app.style.
 
 const rgba = (c) => [c[0], c[1], c[2], 1];
 const cmapLabel = (name) => name.replace(/^cm[or]\./, '');
@@ -15,7 +15,7 @@ function resolveCmap(v, cmaps) {
   return {cmap: 'viridis', reversed: !!v.reversed};
 }
 const defaultStyle = (v, cmaps) => ({...resolveCmap(v, cmaps), vmin: v.vmin, vmax: v.vmax});
-const stopsOf = (st, cmaps, ramp) => { const s = cmaps[st.cmap] || ramp; return st.reversed ? [...s].reverse() : s; };
+const stopsOf = (st, cmaps) => { const s = cmaps[st.cmap]; return st.reversed ? [...s].reverse() : s; };
 // D-54: the log scale needs a positive Min; the stored flag is kept while it is not.
 const effectiveLog = (st) => !!st.log && st.vmin > 0;
 const gradientCss = (stops) => 'linear-gradient(to right,' +
@@ -77,14 +77,14 @@ function niceLogTicks(vmin, vmax) {
 }
 
 // OpenLayers colour expression of a variable: categorical `match`, else `interpolate` over the colourmap stops.
-function colorExpr(v, st, cmaps, ramp = RAMP) {
+function colorExpr(v, st, cmaps) {
   if (v.categorical) {
     const expr = ['match', ['band', 1]];
     for (const [val, c] of v.palette) expr.push(val, rgba(c));
     expr.push([0, 0, 0, 0]);
     return expr;
   }
-  const stops = stopsOf(st, cmaps, ramp);
+  const stops = stopsOf(st, cmaps);
   const expr = ['interpolate', ['linear'], ['band', 1]];
   const n = stops.length;
   // no log operator in OL expressions: the log scale puts the stops at geometric values instead (D-54)
@@ -127,7 +127,7 @@ function createStyle(app) {
   }
 
   const style = {
-    cmaps, groups, ramp: RAMP, sources: show, cmapLabel,
+    cmaps, groups, sources: show, cmapLabel,
     // current style of a variable (a copy; change it with set)
     get(name) {
       const v = varOf(name);
@@ -150,22 +150,12 @@ function createStyle(app) {
       app.url.sync();
       return true;
     },
-    // forget the stored/explicit style: back to the variable's defaults
-    reset(name) {
-      const v = varOf(name);
-      if (!v) return;
-      app.storage.remove(storeKey(name));
-      explicit.delete(name);
-      styles[name] = defaultStyle(v, cmaps);
-      app.bus.emit('style:changed', name);
-      app.url.sync();
-    },
     isExplicit: (name) => explicit.has(name),
-    stopsOf: (st) => stopsOf(st, cmaps, RAMP),
+    stopsOf: (st) => stopsOf(st, cmaps),
     gradientCss, effectiveLog, niceTicks, niceLogTicks,
     colorExpr(name) {
       const v = varOf(name);
-      return colorExpr(v, v.categorical ? null : style.get(name), cmaps, RAMP);
+      return colorExpr(v, v.categorical ? null : style.get(name), cmaps);
     },
     // groups to list in a picker for the current map (see listedGroups)
     listedGroups: (current) => listedGroups(groups, show, current),

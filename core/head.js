@@ -7,6 +7,10 @@ import WebGLTileLayer from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/layer/WebGLT
 import TileLayer from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/layer/Tile.js/+esm';
 import GeoZarr from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/source/GeoZarr.js/+esm';
 import OSM from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/source/OSM.js/+esm';
+import XYZ from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/source/XYZ.js/+esm';
+import VectorLayer from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/layer/Vector.js/+esm';
+import VectorSource from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/source/Vector.js/+esm';
+import TopoJSON from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/format/TopoJSON.js/+esm';
 import {register} from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/proj/proj4.js/+esm';
 import {toLonLat} from 'https://cdn.jsdelivr.net/npm/ol@10.10.0/proj.js/+esm';
 import proj4 from 'https://cdn.jsdelivr.net/npm/proj4@2.22.0/+esm';

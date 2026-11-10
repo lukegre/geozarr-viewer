@@ -3,8 +3,6 @@
   "description": "Colourbar with ticks and units (log ticks on a log scale); in a variable card or as overlay, one per visible variable",
   "slots": ["overlay-bl", "overlay-br", "overlay-tl", "overlay-tr", "bottom", "sidebar", "sidebar-bottom"],
   "default_slot": "overlay-bl",
-  "requires": [],
-  "conflicts": [],
   "option_requires": {"placement": {"card": ["variable-cards"]}},
   "options": {
     "placement": {"type": "enum", "choices": ["overlay", "card"], "default": "overlay", "doc": "overlay: one colourbar per visible variable in the slot; card: inside the settings container a variable-cards component offers"},

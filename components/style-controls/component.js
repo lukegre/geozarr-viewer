@@ -2,12 +2,10 @@
 // Reference: buildStyleControls (D-42 grouped colourmaps, D-45 Space reverses, D-48..D-51 range buttons, D-54 log).
 // State lives in app.style / app.layers / app.frame; this file is only the DOM and the pure helpers below.
 
-const AUTO_TITLE = 'Percentile range (2-98 %) of the data in view; a diverging colourmap when the signs balance';
+const AUTO_TITLE = 'Percentile range (2-98 %) of the data in view; a diverging colormap when the signs balance';
 const MINMAX_TITLE = 'True minimum and maximum of the data in view';
 const AUTO_NONE = 'No loaded data for the current frame';
-const CMAP_TITLE = 'Tip: with this menu focused, press ← / → to step to the previous / next colourmap, or Space to toggle Reversed.';
-
-const hasModifier = (e) => e.altKey || e.ctrlKey || e.metaKey || e.shiftKey;
+const CMAP_TITLE = 'Tip: with this menu focused, press ← / → to step to the previous / next colormap, or Space to toggle Reversed.';
 
 // stepSelect: the option value one step left/right of `current` in `values` (no wrap); null = no step (other key,
 // modifier, already at the end, unknown value).
@@ -58,10 +56,10 @@ function buildControls(app, opts, getName) {
 
   // colourmap select (grouped by source, D-42) + gradient preview
   const sel = h('select');
-  sel.setAttribute('aria-label', 'Colourmap');
+  sel.setAttribute('aria-label', 'Colormap');
   sel.title = CMAP_TITLE;
   const bar = h('span', 'sc-cmbar');
-  row('Colourmap').append(sel, bar);
+  row('Colormap').append(sel, bar);
   const checks = row('');
   checks.classList.add('sc-checks');
   const check = (text, title) => {

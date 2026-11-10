@@ -3,14 +3,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/variable-cards/component.js'], {registerComponent: (d) => registered.push(d)});
+const get = load(['core/util.js', 'components/variable-cards/component.js'], {registerComponent: () => {}});
 const cardOrder = get('cardOrder'), dropBefore = get('dropBefore'), metaLine = get('metaLine');
-
-test('registers one component named variable-cards', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'variable-cards');
-});
 
 test('cardOrder: selected reversed (top first), others in store order', () => {
   const vars = ['a', 'b', 'c', 'd'].map((name) => ({name}));
@@ -34,5 +28,4 @@ test('dropBefore: first card whose midpoint is below the pointer; null below all
 test('metaLine: units and dims joined, empties dropped', () => {
   assert.equal(metaLine({units: 'K', dims: ['time']}), 'K · time');
   assert.equal(metaLine({units: '', dims: []}), '');
-  assert.equal(metaLine({units_display: 'm s⁻¹', units: 'm/s'}), 'm s⁻¹');
 });

@@ -79,8 +79,7 @@ function buildLegend(app, v, opts, vertical, title) {
   el.append(body);
   const units = unitsOf(v);
   if (opts.units !== false && units) el.append(h('div', 'lg-units', units));
-  const RO = globalThis.ResizeObserver;
-  if (RO) new RO(() => layoutTicks(ticks, vertical)).observe(ticks);
+  new ResizeObserver(() => layoutTicks(ticks, vertical)).observe(ticks);
   return el;
 }
 
@@ -90,7 +89,7 @@ registerComponent({
     root.hidden = true;
     if (opts.placement === 'card') {
       // inside each card's settings container; only that variable's style changes redraw it
-      const mine = new globalThis.Map();  // name -> {legend, unsub}
+      const mine = new globalThis.Map();  // name -> {legend, draw}
       app.bus.on('card:settings', ({name, el}) => {
         mine.get(name)?.legend.remove();
         const v = app.varOf(name);

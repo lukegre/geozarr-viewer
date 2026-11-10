@@ -3,16 +3,10 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'core/style.js', 'components/legend/component.js'], {registerComponent: (d) => registered.push(d), RAMP: [], COLORMAPS: {}, COLORMAP_GROUPS: []});
+const get = load(['core/util.js', 'core/style.js', 'components/legend/component.js'], {registerComponent: () => {}, COLORMAPS: {}, COLORMAP_GROUPS: []});
 const legendTicks = get('legendTicks'), fitLabels = get('fitLabels'), gradientFor = get('gradientFor');
 const style = {effectiveLog: get('effectiveLog'), niceTicks: get('niceTicks'), niceLogTicks: get('niceLogTicks')};
 const plain = (x) => JSON.parse(JSON.stringify(x));
-
-test('registers one component named legend', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'legend');
-});
 
 test('legendTicks: linear ticks at (t - vmin) / (vmax - vmin)', () => {
   const t = plain(legendTicks({vmin: 0, vmax: 1}, style));

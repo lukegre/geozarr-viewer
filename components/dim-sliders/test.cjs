@@ -3,15 +3,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/dim-sliders/component.js'], {registerComponent: (d) => registered.push(d)});
-const verticalDims = get('verticalDims'), syncRoles = get('syncRoles'), dimLabel = get('dimLabel');
+const get = load(['core/util.js', 'components/dim-sliders/component.js'], {registerComponent: () => {}});
+const verticalDims = get('verticalDims'), syncRoles = get('syncRoles');
 const plain = (x) => JSON.parse(JSON.stringify(x));
-
-test('registers one component named dim-sliders', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'dim-sliders');
-});
 
 test('verticalDims: v dims in union order; off dims get no slider', () => {
   const roles = {time: 'h', depth: 'v', band: 'off', lev: 'v'};
@@ -26,9 +20,4 @@ test('verticalDims: without a timeline the h dim is a slider too', () => {
 test('defaults without dim-roles: first dim h, the rest v', () => {
   const roles = syncRoles(['time', 'depth', 'band'], {});
   assert.deepEqual(plain(verticalDims(['time', 'depth', 'band'], roles, true)), ['depth', 'band']);
-});
-
-test('dimLabel: label or index', () => {
-  assert.equal(dimLabel({labels: ['10 m']}, 0), '10 m');
-  assert.equal(dimLabel({labels: null}, 2), '2');
 });

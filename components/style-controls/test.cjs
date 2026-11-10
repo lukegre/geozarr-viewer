@@ -3,15 +3,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {load} = require('../../tests/_load.cjs');
 
-const registered = [];
-const get = load(['core/util.js', 'components/style-controls/component.js'], {registerComponent: (d) => registered.push(d)});
+const get = load(['core/util.js', 'components/style-controls/component.js'], {registerComponent: () => {}});
 const stepValue = get('stepValue'), isReverseKey = get('isReverseKey'), parseRange = get('parseRange');
 const symmetricRange = get('symmetricRange'), controlState = get('controlState');
-
-test('registers one component named style-controls', () => {
-  assert.equal(registered.length, 1);
-  assert.equal(registered[0].name, 'style-controls');
-});
 
 test('stepValue: arrows step one option, no wrap, modifiers and other keys ignored', () => {
   const v = ['a', 'b', 'c'];

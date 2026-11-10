@@ -3,10 +3,8 @@
   "description": "Basemap selector (Light, Dark, OSM or None)",
   "slots": ["sidebar", "sidebar-bottom", "topbar", "overlay-tl", "overlay-tr", "overlay-bl", "overlay-br"],
   "default_slot": "overlay-tl",
-  "requires": [],
-  "conflicts": [],
   "options": {
-    "default": {"type": "enum", "choices": ["light", "dark", "osm", "none"], "default": "dark", "doc": "basemap shown at start"},
+    "default": {"type": "enum", "choices": ["light", "dark", "osm", "satellite", "land", "none"], "default": "dark", "doc": "basemap shown at start"},
     "label": {"type": "bool", "default": true, "doc": "show the word \"Basemap\" next to the selector"}
   }
 }

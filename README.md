@@ -2,7 +2,7 @@
 
 Assembles a standalone GeoZarr viewer page (OpenLayers + zarrita, no build step) from a small component library and a
 TOML spec. The core (map, store loading, colourmaps, layers, frame statistics, URL state) is always included;
-components (basemap selector, readout, later cards, sliders, …) are picked per page and placed in fixed layout slots.
+components (basemap selector, readout, variable cards, sliders, …) are picked per page and placed in fixed layout slots.
 Design and contracts: [ARCHITECTURE.md](ARCHITECTURE.md). Ported from the reference `preview.html` of
 geozarr-pyramid-maker.
 
