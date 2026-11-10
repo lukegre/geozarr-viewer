@@ -240,6 +240,7 @@ function createLayers(app) {
       for (const [k, l] of Object.entries(basemaps)) l.setVisible(k === id);
       landTop.setVisible(id === 'land');
       if (id === 'land') showLand();
+      if (state.map) app.url.sync();  // before the map exists the app syncs once at the end of startup
       bus.emit('basemap:changed', id);
     },
     // Rebuilding the view in place is unreliable (a blank map), so reload with the new centre.

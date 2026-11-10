@@ -1,5 +1,5 @@
-// Shareable URL: a registry of {read(params), write(params)} entries. The core registers store, var/hidden, dims, style
-// and view (lon, x, y, z); components register their own with app.url.register. Ported from the reference: dimToParam,
+// Shareable URL: a registry of {read(params), write(params)} entries. The core registers store, var/hidden, dims, style,
+// basemap and view (lon, x, y, z); components register their own with app.url.register. Ported from the reference: dimToParam,
 // dimFromParam, styleParams, applyUrlState, syncUrl. URL values win over remembered (localStorage) ones, so a shared
 // link reproduces the view.
 
@@ -87,7 +87,7 @@ function createUrl(app) {
   };
 }
 
-// The core's own URL entries: store, selection (var, hidden), dims, style (+ opacity), view (lon, x, y, z).
+// The core's own URL entries: store, selection (var, hidden), dims, style (+ opacity), basemap, view (lon, x, y, z).
 function registerCoreUrl(app) {
   const {state} = app;
   app.url.register('store', {
@@ -143,6 +143,10 @@ function registerCoreUrl(app) {
       const vars = state.selected.map((n) => app.varOf(n));
       for (const [k, val] of styleParamsOf(vars, (n) => app.style.get(n), (n) => app.layers.opacityOf(n))) q.set(k, val);
     },
+  });
+  app.url.register('basemap', {
+    read(p) { if (app.layers.basemaps.some(([k]) => k === p.get('basemap'))) state.basemap = p.get('basemap'); },
+    write(q) { q.set('basemap', state.basemap); },
   });
   app.url.register('view', {
     write(q) {
